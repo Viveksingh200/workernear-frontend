@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8f9fa;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Globally remove borders from the entire website for a sleek borderless UI */
+*,
+::before,
+::after {
+  border-width: 0px !important;
+  border-style: none !important;
+  border-color: transparent !important;
+}
+
+/* Maintain functional input states with sleek subtle background fills for premium borderless form controls */
+input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not(.bg-transparent),
+textarea:not(.bg-transparent),
+select:not(.bg-transparent) {
+  border-width: 0px !important;
+  border-style: none !important;
+  background-color: #f3f4f6 !important;
+  /* Zinc 100 background for clarity on light background canvas */
+  color: #18181b !important;
+  /* Zinc 900 */
+}
+
+/* Accessibility focus ring */
+input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not(.bg-transparent):focus,
+textarea:not(.bg-transparent):focus,
+select:not(.bg-transparent):focus {
+  background-color: #ffffff !important;
+  outline: 2px solid #f97316 !important;
+  /* orange-500 focus outline */
+  outline-offset: 1px !important;
+}
+
+/* Hide scrollbars globally for clean carousels and lists */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* Ensure inputs inside the hero search bar remain transparent */
+#hero-location-input,
+#hero-location-input:focus,
+#hero-query-input,
+#hero-query-input:focus,
+form.hero-search-form input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]),
+form.hero-search-form input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):focus {
+  background-color: transparent !important;
+}
