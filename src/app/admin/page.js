@@ -30,6 +30,7 @@ export default function AdminDashboard() {
   const [allUsers, setAllUsers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [isReloading, setIsReloading] = useState(false);
 
   // Category form states
   const [newCatName, setNewCatName] = useState("");
@@ -48,10 +49,19 @@ export default function AdminDashboard() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const fetchAdminData = async () => {
-    setLoadingData(true);
+    // Show full skeleton only if we have NO data yet
+    if (categories.length === 0 && allWorkers.length === 0) {
+      setLoadingData(true);
+    } else {
+      setIsReloading(true);
+    }
     setError("");
     const token = localStorage.getItem("authToken");
-    if (!token) return;
+    if (!token) {
+      setLoadingData(false);
+      setIsReloading(false);
+      return;
+    }
 
     try {
       // 1. Fetch pending workers
@@ -84,6 +94,7 @@ export default function AdminDashboard() {
       setError("Failed to fetch administrative data.");
     } finally {
       setLoadingData(false);
+      setIsReloading(false);
     }
   };
 
@@ -285,10 +296,11 @@ export default function AdminDashboard() {
           </div>
           <button
             onClick={fetchAdminData}
-            className="flex items-center gap-1 text-xs font-bold bg-white border border-zinc-200 px-3.5 py-2 rounded-xl text-zinc-700 hover:bg-zinc-50 cursor-pointer"
+            disabled={isReloading}
+            className="flex items-center gap-1 text-xs font-bold bg-white border border-zinc-200 px-3.5 py-2 rounded-xl text-zinc-700 hover:bg-zinc-50 cursor-pointer disabled:opacity-50"
           >
-            <RefreshCw className="h-3.5 w-3.5" />
-            <span>Reload Logs</span>
+            <RefreshCw className={`h-3.5 w-3.5 ${isReloading ? "animate-spin" : ""}`} />
+            <span>{isReloading ? "Reloading..." : "Reload Logs"}</span>
           </button>
         </div>
 

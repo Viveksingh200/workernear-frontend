@@ -63,8 +63,8 @@ const Register = () => {
     if (res.success) {
       setSuccess("Registration successful! Redirecting to login page...");
       setTimeout(() => {
-        router.push("/login");
-      }, 2000);
+        window.location.href = "/login";
+      }, 1500);
     } else {
       setError(res.message || "Registration failed. Try again.");
       setLoading(false);

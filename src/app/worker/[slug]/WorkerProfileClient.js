@@ -243,6 +243,15 @@ export default function WorkerProfileClient({ initialWorker }) {
                   <MapPin className="h-4 w-4 text-zinc-400 shrink-0" />
                   <span>{worker.area}, {worker.city}</span>
                 </div>
+                <div className="mt-3">
+                  <a
+                    href={`tel:${worker.phone}`}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 text-white py-2 px-4 font-bold text-xs hover:bg-emerald-700 shadow-sm transition-colors cursor-pointer"
+                  >
+                    <Phone className="h-3.5 w-3.5 shrink-0" />
+                    <span>{worker.phone}</span>
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -361,9 +370,11 @@ export default function WorkerProfileClient({ initialWorker }) {
                       ))}
                     </div>
                   </div>
-                  <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed break-words">
-                    {r.comment || (language === "hi" ? "(केवल रेटिंग दी गई)" : "(Only rated)")}
-                  </p>
+                  {r.comment && (
+                    <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed break-words">
+                      {r.comment}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
@@ -373,26 +384,7 @@ export default function WorkerProfileClient({ initialWorker }) {
 
       {/* Right Column: CTA Dialer and Leave a Review */}
       <div className="flex flex-col gap-6">
-        {/* Dialer Panel */}
-        <div className="bg-white rounded-2xl border border-gray-150 p-6 shadow-sm flex flex-col items-stretch text-center">
-          <Award className="h-10 w-10 text-orange-500 mx-auto mb-3" />
-          <h3 className="font-bold text-zinc-900 mb-1">
-            {language === "hi" ? "क्या आपको सहायता चाहिए?" : "Need assistance?"}
-          </h3>
-          <p className="text-xs text-zinc-400 mb-6 px-4">
-            {language === "hi"
-              ? "इस पेशेवर से सीधे बात करने के लिए बटन पर क्लिक करें।"
-              : "Contact this worker directly on their phone details to schedule support."}
-          </p>
 
-          <a
-            href={`tel:${worker.phone}`}
-            className="flex items-center justify-center gap-2 rounded-xl bg-emerald-650 bg-emerald-600 text-white py-3.5 px-6 font-extrabold tracking-wide hover:bg-emerald-700 shadow-md shadow-emerald-600/10 transition-all cursor-pointer"
-          >
-            <Phone className="h-5 w-5 shrink-0" />
-            <span>{worker.phone}</span>
-          </a>
-        </div>
 
         {/* Leave a Review (Only show rating form to users who aren't the worker themselves) */}
         {currentUserId !== worker.userId ? (
@@ -429,13 +421,9 @@ export default function WorkerProfileClient({ initialWorker }) {
                       ))}
                     </div>
                   </div>
-                  {myReview.comment ? (
+                  {myReview.comment && (
                     <p className="text-xs text-zinc-600 leading-relaxed italic bg-white p-3 rounded-lg border border-zinc-200/50 break-words">
                       "{myReview.comment}"
-                    </p>
-                  ) : (
-                    <p className="text-xs text-zinc-400 leading-relaxed italic bg-white p-3 rounded-lg border border-zinc-200/50">
-                      {language === "hi" ? "(केवल रेटिंग दी गई)" : "(Only rated)"}
                     </p>
                   )}
                   <p className="text-[9px] text-zinc-400 mt-2 text-right">

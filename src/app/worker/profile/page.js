@@ -59,7 +59,7 @@ export default function WorkerProfilePage() {
     if (workerProfile) {
       setName(workerProfile.name || "");
       setPhone(workerProfile.phone || "");
-      setProfession(workerProfile.profession || "");
+      setProfession(workerProfile.profession === "Pending Setup" ? "" : (workerProfile.profession || ""));
       setExperience(workerProfile.experience || 0);
       setDescription(workerProfile.description || "");
       setServiceAreas(workerProfile.serviceAreas?.join(", ") || "");

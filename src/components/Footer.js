@@ -10,7 +10,7 @@ export default function Footer() {
   return (
     <footer className="bg-zinc-50 border-t border-gray-100 transition-colors duration-300">
       <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 pb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 pb-10">
           
           {/* Logo and About */}
           <div className="flex flex-col gap-4">
@@ -35,7 +35,9 @@ export default function Footer() {
             <ul className="flex flex-col gap-3">
               <li>
                 <a
-                  href="#"
+                  href="https://dev-viveksingh-portfolio.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-sm text-zinc-650 hover:text-zinc-900 transition-colors"
                 >
                   {t.aboutUs}
@@ -43,7 +45,9 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="https://dev-viveksingh-portfolio.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-sm text-zinc-650 hover:text-zinc-900 transition-colors"
                 >
                   {t.contact}
@@ -52,62 +56,13 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Support links */}
-          <div className="flex flex-col gap-4">
-            <h3 className="text-sm font-semibold tracking-wider text-zinc-900 uppercase">
-              {t.support}
-            </h3>
-            <ul className="flex flex-col gap-3">
-              <li>
-                <a
-                  href="#"
-                  className="text-sm text-zinc-650 hover:text-zinc-900 transition-colors"
-                >
-                  {t.safetyTrust}
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-sm text-zinc-650 hover:text-zinc-900 transition-colors"
-                >
-                  {t.workerSupport}
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Legal links */}
-          <div className="flex flex-col gap-4">
-            <h3 className="text-sm font-semibold tracking-wider text-zinc-900 uppercase">
-              {t.legal}
-            </h3>
-            <ul className="flex flex-col gap-3">
-              <li>
-                <a
-                  href="#"
-                  className="text-sm text-zinc-650 hover:text-zinc-900 transition-colors"
-                >
-                  {t.privacyPolicy}
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-sm text-zinc-650 hover:text-zinc-900 transition-colors"
-                >
-                  {t.termsOfService}
-                </a>
-              </li>
-            </ul>
-          </div>
 
         </div>
 
         {/* Bottom copyright line */}
         <div className=" pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-zinc-500">
-            {t.rightsReserved}
+            &copy; Vivek Singh
           </p>
         </div>
       </div>
