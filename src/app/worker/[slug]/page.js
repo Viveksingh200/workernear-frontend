@@ -32,13 +32,13 @@ export async function generateMetadata({ params }) {
   }
 
   return {
-    title: `${worker.name} - Professional ${worker.profession} in ${worker.city} | Workers`,
-    description: `${worker.name} is a trusted ${worker.profession} offering services in ${worker.city}. ${worker.description?.slice(0, 120)}...`,
-      openGraph: {
-        title: `${worker.name} - ${worker.profession} | Workers`,
-        description: worker.description || `Call ${worker.name} for local professional service in ${worker.city}.`,
-        images: worker.profileImage ? [{ url: getProfileImageUrl(worker.profileImage) }] : []
-      }
+    title: `${worker.name} | ${worker.profession} in ${worker.city} | WorkerNear`,
+    description: `Hire ${worker.name}, a trusted ${worker.profession.toLowerCase()} in ${worker.city} with verified ratings, experience and customer reviews.`,
+    openGraph: {
+      title: `${worker.name} | ${worker.profession} in ${worker.city} | WorkerNear`,
+      description: `Hire ${worker.name}, a trusted ${worker.profession.toLowerCase()} in ${worker.city} with verified ratings, experience and customer reviews.`,
+      images: worker.profileImage ? [{ url: getProfileImageUrl(worker.profileImage) }] : []
+    }
   };
 }
 

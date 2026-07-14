@@ -15,8 +15,60 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Workers - Find local pros for any project",
-  description: "Trusted professionals in your community, ready to help.",
+  metadataBase: new URL("https://workernear.com"),
+  title: {
+    default: "WorkerNear - Find Trusted Local Workers Near You",
+    template: "%s | WorkerNear",
+  },
+  description:
+    "Find trusted local workers near you including electricians, plumbers, carpenters, painters, AC repair technicians, home cleaning professionals, and more across India.",
+  keywords: [
+    "worker near me",
+    "local workers",
+    "plumber near me",
+    "electrician near me",
+    "AC repair",
+    "carpenter near me",
+    "home services",
+    "find workers",
+    "workernear",
+    "local service provider",
+    "India workers",
+  ],
+  authors: [
+    {
+      name: "WorkerNear",
+    },
+  ],
+  creator: "WorkerNear",
+  publisher: "WorkerNear",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: "WorkerNear - Find Trusted Local Workers Near You",
+    description:
+      "Search verified local workers by profession and location. View ratings, reviews and contact workers directly.",
+    url: "https://workernear.com",
+    siteName: "WorkerNear",
+    locale: "en_IN",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "WorkerNear",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "WorkerNear",
+    description: "Find trusted local workers across India.",
+    images: ["/og-image.jpg"],
+  },
 };
 
 export default function RootLayout({ children }) {

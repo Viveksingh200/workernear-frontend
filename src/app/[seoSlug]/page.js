@@ -118,14 +118,14 @@ export async function generateMetadata({ params }) {
   const locationString = area ? `${area}, ${city}` : city;
 
   return {
-    title: `Best ${displayName} Services in ${locationString} | WorkerNear`,
-    description: `Find top-rated, certified ${displayName} professionals in ${locationString}. Read customer reviews, check real-time availability, and hire instantly online.`,
+    title: `Best ${displayName}s in ${locationString}`,
+    description: `Find verified ${displayName.toLowerCase()}s in ${locationString} with ratings, reviews and phone numbers. Compare local ${displayName.toLowerCase()}s near you.`,
     alternates: {
       canonical: `https://workernear.com/${resolvedParams.seoSlug}`
     },
     openGraph: {
-      title: `Best ${displayName} Services in ${locationString} | WorkerNear`,
-      description: `Need ${displayName} in ${locationString}? Find trusted local professionals, check reviews, and hire instantly.`,
+      title: `Best ${displayName}s in ${locationString}`,
+      description: `Find verified ${displayName.toLowerCase()}s in ${locationString} with ratings, reviews and phone numbers. Compare local ${displayName.toLowerCase()}s near you.`,
       url: `https://workernear.com/${resolvedParams.seoSlug}`,
       type: "website"
     }
