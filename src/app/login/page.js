@@ -17,10 +17,12 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setShowForgotPassword(false);
     setLoading(true);
 
     if (!phone || !password) {
@@ -42,6 +44,9 @@ const Login = () => {
       }
     } else {
       setError(res.message || "Invalid phone number or password");
+      if (res.message === "Invalid credentials!") {
+        setShowForgotPassword(true);
+      }
       setLoading(false);
     }
   };
@@ -102,6 +107,14 @@ const Login = () => {
               </button>
             </div>
           </div>
+
+          {showForgotPassword && (
+            <span className="flex justify-end w-full">
+              <Link href="/forgot-password" className="text-xs font-semibold text-amber-600 hover:text-orange-700 transition-colors">
+                Forgot Password?
+              </Link>
+            </span>
+          )}
 
           <button
             type="submit"

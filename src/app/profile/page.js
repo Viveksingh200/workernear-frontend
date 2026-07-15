@@ -260,9 +260,14 @@ export default function UserProfile() {
 
             <form onSubmit={handleUpdatePassword} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-zinc-500">
-                  {language === "hi" ? "वर्तमान पासवर्ड" : "Current Password"}
-                </label>
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-bold text-zinc-500">
+                    {language === "hi" ? "वर्तमान पासवर्ड" : "Current Password"}
+                  </label>
+                  <a href="/forgot-password" className="text-[10px] font-semibold text-amber-600 hover:text-orange-700 transition-colors">
+                    {language === "hi" ? "पासवर्ड भूल गए?" : "Forgot Password?"}
+                  </a>
+                </div>
                 <div className="relative">
                   <input
                     type={showCurrentPassword ? "text" : "password"}

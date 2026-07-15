@@ -380,6 +380,44 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const requestPasswordReset = async (phone) => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/user/forgot-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ phone })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to send OTP");
+      }
+      return { success: true, message: data.message };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  };
+
+  const resetPasswordWithOtp = async (phone, otp, newPassword) => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/user/reset-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ phone, otp, newPassword })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to reset password");
+      }
+      return { success: true, message: data.message };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  };
+
   const logout = () => {
     setAuthSession(null);
     window.location.href = "/login";
@@ -403,6 +441,8 @@ export function AuthProvider({ children }) {
         loading,
         login,
         register,
+        requestPasswordReset,
+        resetPasswordWithOtp,
         logout,
         updateProfileState,
         updateUserState,
