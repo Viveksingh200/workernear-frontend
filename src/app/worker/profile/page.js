@@ -762,9 +762,14 @@ export default function WorkerProfilePage() {
 
               <form onSubmit={handleUpdatePassword} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider">
-                    {language === "hi" ? "वर्तमान पासवर्ड" : "Current Password"}
-                  </label>
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider">
+                      {language === "hi" ? "वर्तमान पासवर्ड" : "Current Password"}
+                    </label>
+                    <a href="/forgot-password" className="text-[10px] font-semibold text-amber-600 hover:text-orange-700 transition-colors">
+                      {language === "hi" ? "पासवर्ड भूल गए?" : "Forgot Password?"}
+                    </a>
+                  </div>
                   <div className="relative">
                     <input
                       type={showCurrentPassword ? "text" : "password"}
