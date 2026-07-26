@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/context/authContext";
 import { useLanguage } from "@/context/languageContext";
 import { User, Lock, Save, KeyRound, CheckCircle, ArrowLeft, ShieldAlert, Camera, Trash2, Loader2, Navigation, Eye, EyeOff } from "lucide-react";
+import { ProfileSkeleton } from "@/components/Skeletons";
 
 export default function WorkerProfilePage() {
   const { user, workerProfile, loading, updateProfileState, updateUserState, updateLocation } = useAuth();
@@ -359,6 +360,10 @@ export default function WorkerProfilePage() {
       setUpdatingPassword(false);
     }
   };
+
+  if (loading || !user || !workerProfile) {
+    return <ProfileSkeleton />;
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50 text-zinc-900">

@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { LanguageProvider } from "@/context/languageContext";
 import { AuthProvider } from "@/context/authContext";
 import NextTopLoader from "nextjs-toploader";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -94,6 +95,7 @@ export default function RootLayout({ children }) {
             {children}
           </AuthProvider>
         </LanguageProvider>
+        <Analytics />
       </body>
     </html>
   );

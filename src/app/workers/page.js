@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { useLanguage } from "@/context/languageContext";
 import { useAuth } from "@/context/authContext";
 import { Search, MapPin, Star, Filter, ArrowRight, CheckCircle2 } from "lucide-react";
+import { WorkerCardSkeleton, BackendStatusNotice } from "@/components/Skeletons";
 
 function SearchResultsContent() {
   const searchParams = useSearchParams();
@@ -70,7 +71,7 @@ function SearchResultsContent() {
       if (area) queryParams.set("area", area);
       if (rating) queryParams.set("rating", rating);
       queryParams.set("page", page.toString());
-      queryParams.set("limit", "9");
+      queryParams.set("limit", "10");
 
       const res = await fetch(`${API_BASE_URL}/workers?${queryParams.toString()}`);
       const data = await res.json();
@@ -209,10 +210,13 @@ function SearchResultsContent() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="animate-pulse bg-white border border-gray-150 rounded-xl h-80 w-full"></div>
-              ))}
+            <div className="space-y-4">
+              <BackendStatusNotice />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <WorkerCardSkeleton key={i} />
+                ))}
+              </div>
             </div>
           ) : workers.length === 0 ? (
             <div className="text-center py-16 bg-white border border-gray-150 rounded-2xl p-8">

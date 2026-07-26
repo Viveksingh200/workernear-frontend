@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/context/authContext";
 import { useLanguage } from "@/context/languageContext";
+import { DashboardSkeleton, ReviewCardSkeleton } from "@/components/Skeletons";
 import { 
   User, 
   ShieldAlert, 
@@ -58,11 +59,7 @@ export default function WorkerDashboard() {
   }, [workerProfile]);
 
   if (loading || !user || !workerProfile) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-50">
-        <p className="text-zinc-500 font-semibold animate-pulse">Loading dashboard...</p>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   // Handle availability update

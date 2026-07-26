@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "../context/languageContext";
 import { API_BASE_URL } from "@/config";
+import { CategoryCardSkeleton } from "./Skeletons";
 
 const BACKEND_URL = API_BASE_URL;
 
@@ -70,10 +71,7 @@ export default function PopularServices() {
         </div>
         <div className="mt-8 flex flex-row overflow-x-auto md:grid md:grid-cols-3 lg:grid-cols-6 gap-4 pb-4 md:pb-0 scrollbar-none">
           {[...Array(6)].map((_, index) => (
-            <div
-              key={index}
-              className="h-12 rounded-xl bg-white border border-gray-150 animate-pulse w-36 md:w-auto shrink-0 md:shrink"
-            ></div>
+            <CategoryCardSkeleton key={index} />
           ))}
         </div>
       </section>

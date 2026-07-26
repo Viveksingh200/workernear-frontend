@@ -6,6 +6,7 @@ import { useAuth } from "@/context/authContext";
 import { useLanguage } from "@/context/languageContext";
 import { Star, MapPin, Phone, Award, ShieldCheck, Heart, Send, CheckCircle2, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { WorkerProfileSkeleton, ReviewCardSkeleton } from "@/components/Skeletons";
 
 export default function WorkerProfileClient({ initialWorker }) {
   const { user, isAuthenticated, loading } = useAuth();
@@ -339,10 +340,7 @@ export default function WorkerProfileClient({ initialWorker }) {
           </h2>
 
           {loadingReviews ? (
-            <div className="animate-pulse flex flex-col gap-4">
-              <div className="h-10 bg-zinc-100 rounded-md w-full"></div>
-              <div className="h-10 bg-zinc-100 rounded-md w-full"></div>
-            </div>
+            <ReviewCardSkeleton />
           ) : reviews.length === 0 ? (
             <div className="text-center py-10">
               <p className="text-zinc-400 text-sm">

@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/context/languageContext";
 import { useAuth } from "@/context/authContext";
 import { Search, MapPin, Star, Filter, ArrowRight, CheckCircle2 } from "lucide-react";
+import { WorkerCardSkeleton, BackendStatusNotice } from "@/components/Skeletons";
 
 export default function SeoLandingClient({
   initialWorkers,
@@ -200,10 +201,13 @@ export default function SeoLandingClient({
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="animate-pulse bg-white border border-gray-150 rounded-xl h-80 w-full"></div>
-            ))}
+          <div className="space-y-4">
+            <BackendStatusNotice />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <WorkerCardSkeleton key={i} />
+              ))}
+            </div>
           </div>
         ) : workers.length === 0 ? (
           <div className="text-center py-16 bg-white border border-gray-150 rounded-2xl p-8">

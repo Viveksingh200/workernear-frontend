@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/authContext";
-import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft, RotateCw } from "lucide-react";
 
 const ForgotPassword = () => {
   const { requestPasswordReset, resetPasswordWithOtp } = useAuth();
@@ -19,9 +19,22 @@ const ForgotPassword = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    let interval = null;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
 
   const handleRequestOtp = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setError("");
     setSuccess("");
     setLoading(true);
@@ -34,8 +47,9 @@ const ForgotPassword = () => {
 
     const res = await requestPasswordReset(phone);
     if (res.success) {
-      setSuccess("OTP sent successfully (Use 123456 for testing)");
+      setSuccess(res.message || "OTP sent to your phone number.");
       setStep(2);
+      setTimer(60); // 1 minute timer
     } else {
       setError(res.message || "Failed to send OTP");
     }
@@ -114,18 +128,34 @@ const ForgotPassword = () => {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || timer > 0}
               className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg px-4 py-2.5 text-base tracking-wide font-semibold cursor-pointer shadow-md shadow-orange-500/10 hover:shadow-orange-500/25 transition-all duration-200 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Sending..." : "Send OTP"}
+              {loading ? "Sending..." : timer > 0 ? `Resend OTP in ${timer}s` : "Send OTP"}
             </button>
           </form>
         ) : (
           <form onSubmit={handleResetPassword} className="flex flex-col gap-6 w-full">
             <div className="flex flex-col">
-              <label htmlFor="otp" className="text-zinc-700 font-semibold text-sm">
-                OTP
-              </label>
+              <div className="flex items-center justify-between">
+                <label htmlFor="otp" className="text-zinc-700 font-semibold text-sm">
+                  OTP
+                </label>
+                {timer > 0 ? (
+                  <span className="text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100">
+                    Resend in {timer}s
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleRequestOtp}
+                    disabled={loading}
+                    className="text-xs font-bold text-amber-600 hover:text-orange-700 hover:underline cursor-pointer disabled:opacity-50 flex items-center gap-1"
+                  >
+                    <RotateCw className="h-3 w-3" /> Resend OTP
+                  </button>
+                )}
+              </div>
               <input
                 id="otp"
                 type="text"
