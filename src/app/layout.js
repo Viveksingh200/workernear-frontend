@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 export const metadata = {
   metadataBase: new URL("https://workernear.com"),
   title: {
-    default: "WorkerNear - Find Trusted Local Workers Near You",
-    template: "%s | WorkerNear",
+    default: "Carpenters, Painters, AC repair Technicians, Plumbers | Find Trusted Local Workers",
+    template: "%s | Workers near me",
   },
   description:
     "Find trusted local workers near you including electricians, plumbers, carpenters, painters, AC repair technicians, home cleaning professionals, and more across India.",
@@ -48,7 +48,7 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: "WorkerNear - Find Trusted Local Workers Near You",
+    title: "Carpenters, Painters, AC repair Technicians, Plumbers | Find Trusted Local Workers",
     description:
       "Search verified local workers by profession and location. View ratings, reviews and contact workers directly.",
     url: "https://workernear.com",
@@ -66,7 +66,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "WorkerNear",
+    title: "Carpenters, Painters, AC repair Technicians, Plumbers | Find Trusted Local Workers",
     description: "Find trusted local workers across India.",
     images: ["/og-image.jpg"],
   },

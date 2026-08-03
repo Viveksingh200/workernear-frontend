@@ -1,16 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/authContext";
 import { useLanguage } from "@/context/languageContext";
 import { Eye, EyeOff } from "lucide-react";
 
-const Register = () => {
+function RegisterContent() {
   const { register } = useAuth();
   const { t, language } = useLanguage();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -62,14 +64,17 @@ const Register = () => {
     const res = await register(payload);
     if (res.success) {
       setSuccess("Registration successful! Redirecting to login page...");
+      const loginUrl = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : "/login";
       setTimeout(() => {
-        window.location.href = "/login";
+        window.location.replace(loginUrl);
       }, 1500);
     } else {
       setError(res.message || "Registration failed. Try again.");
       setLoading(false);
     }
   };
+
+  const loginLink = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : "/login";
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4 bg-zinc-100">
@@ -263,7 +268,7 @@ const Register = () => {
 
           <p className="text-xs text-zinc-500 self-center font-medium">
             {t.alreadyHaveAccount}
-            <Link href="/login" className="text-orange-600 hover:text-amber-600 font-bold hover:underline transition-colors ml-1">
+            <Link href={loginLink} replace className="text-orange-600 hover:text-amber-600 font-bold hover:underline transition-colors ml-1">
               {t.login}
             </Link>
           </p>
@@ -271,6 +276,12 @@ const Register = () => {
       </div>
     </div>
   );
-};
+}
 
-export default Register;
+export default function Register() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-zinc-100 text-xs font-semibold text-zinc-500">Loading...</div>}>
+      <RegisterContent />
+    </Suspense>
+  );
+}

@@ -16,7 +16,8 @@ export default function TopProfessionals() {
   const handleProfileClick = (e, slug) => {
     if (!isAuthenticated) {
       e.preventDefault();
-      window.location.href = "/register";
+      const targetUrl = slug && slug !== "#" ? `/worker/${slug}` : "";
+      window.location.href = targetUrl ? `/register?redirect=${encodeURIComponent(targetUrl)}` : "/register";
     }
   };
 
@@ -37,7 +38,7 @@ export default function TopProfessionals() {
           const mapped = data.workers.map((w) => ({
             name: w.name,
             role: w.profession,
-            image: getProfileImageUrl(w.profileImage) || "/professionals/sarah.png",
+            image: getProfileImageUrl(w.profileImage) || "",
             rating: Math.round(w.rating) || 5,
             reviewsCount: w.totalReviews || 0,
             slug: w.slug,
@@ -55,7 +56,7 @@ export default function TopProfessionals() {
               const mapped = cityData.workers.map((w) => ({
                 name: w.name,
                 role: w.profession,
-                image: getProfileImageUrl(w.profileImage) || "/professionals/sarah.png",
+                image: getProfileImageUrl(w.profileImage) || "",
                 rating: Math.round(w.rating) || 5,
                 reviewsCount: w.totalReviews || 0,
                 slug: w.slug,
@@ -75,7 +76,7 @@ export default function TopProfessionals() {
               const mapped = fallbackData.workers.map((w) => ({
                 name: w.name,
                 role: w.profession,
-                image: getProfileImageUrl(w.profileImage) || "/professionals/sarah.png",
+                image: getProfileImageUrl(w.profileImage) || "",
                 rating: Math.round(w.rating) || 5,
                 reviewsCount: w.totalReviews || 0,
                 slug: w.slug,
@@ -175,14 +176,17 @@ export default function TopProfessionals() {
               onClick={(e) => handleProfileClick(e, pro.slug)}
               className="relative h-16 w-16 sm:h-20 sm:w-20 rounded-2xl overflow-hidden bg-zinc-100 cursor-pointer shrink-0 border border-gray-100"
             >
-              <Image
-                src={pro.image}
-                alt={pro.name}
-                fill
-                sizes="(max-w-7xl) 80px, 80px"
-                className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                priority={index === 0}
-              />
+              {pro.image ? (
+                <img
+                  src={pro.image}
+                  alt={pro.name}
+                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              ) : (
+                <div className="h-full w-full flex items-center justify-center bg-amber-100 text-amber-700 font-extrabold text-lg sm:text-xl">
+                  {pro.name.charAt(0).toUpperCase()}
+                </div>
+              )}
             </a>
 
             {/* Info details (Center section) */}

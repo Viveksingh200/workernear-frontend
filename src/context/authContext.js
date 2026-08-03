@@ -111,6 +111,31 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Helper fetch that automatically refreshes the token on 401 Unauthorized response
+  const authenticatedFetch = async (url, options = {}) => {
+    let token = localStorage.getItem("authToken");
+    const headers = {
+      "Content-Type": "application/json",
+      ...options.headers,
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    };
+
+    let res = await fetch(url, { ...options, headers });
+
+    if (res.status === 401) {
+      const newAccessToken = await refreshSession();
+      if (newAccessToken) {
+        const retryHeaders = {
+          ...headers,
+          Authorization: `Bearer ${newAccessToken}`
+        };
+        res = await fetch(url, { ...options, headers: retryHeaders });
+      }
+    }
+
+    return res;
+  };
+
   // Load user session on mount
   useEffect(() => {
     const fetchSession = async () => {
@@ -446,6 +471,8 @@ export function AuthProvider({ children }) {
         logout,
         updateProfileState,
         updateUserState,
+        authenticatedFetch,
+        refreshSession,
         currentLocation,
         updateLocation,
         detectLocation,

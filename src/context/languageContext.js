@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 const translations = {
   en: {
-    brand: "Workers",
+    brand: "WorkerNear",
     findServices: "Find Services",
     howItWorks: "How it Works",
     becomePro: "Become a Pro",
@@ -72,7 +72,7 @@ const translations = {
     useCurrentLocation: "Use Current Location"
   },
   hi: {
-    brand: "वर्कर्स",
+    brand: "WorkerNear",
     findServices: "सेवाएं खोजें",
     howItWorks: "यह कैसे काम करता है",
     becomePro: "प्रो बनें",

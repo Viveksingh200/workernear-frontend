@@ -1,16 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/authContext";
 import { useLanguage } from "@/context/languageContext";
 import { Eye, EyeOff } from "lucide-react";
 
-const Login = () => {
+function LoginContent() {
   const { login } = useAuth();
   const { t } = useLanguage();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect");
 
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -33,14 +35,15 @@ const Login = () => {
 
     const res = await login(phone, password);
     if (res.success) {
-      // Role-based redirection
       const userRole = res.user.role;
-      if (userRole === "admin") {
-        router.push("/admin");
+      if (redirectUrl && redirectUrl.startsWith("/")) {
+        window.location.replace(redirectUrl);
+      } else if (userRole === "admin") {
+        window.location.replace("/admin");
       } else if (userRole === "provider") {
-        router.push("/worker/dashboard");
+        window.location.replace("/worker/dashboard");
       } else {
-        router.push("/");
+        window.location.replace("/");
       }
     } else {
       setError(res.message || "Invalid phone number or password");
@@ -50,6 +53,8 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  const registerLink = redirectUrl ? `/register?redirect=${encodeURIComponent(redirectUrl)}` : "/register";
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-6 bg-zinc-100">
@@ -126,7 +131,7 @@ const Login = () => {
 
           <p className="text-xs text-zinc-500 self-center font-medium">
             {t.dontHaveAccount}
-            <Link href="/register" className="text-orange-600 hover:text-amber-600 font-bold hover:underline transition-colors ml-1">
+            <Link href={registerLink} replace className="text-orange-600 hover:text-amber-600 font-bold hover:underline transition-colors ml-1">
               {t.register}
             </Link>
           </p>
@@ -134,6 +139,12 @@ const Login = () => {
       </div>
     </div>
   );
-};
+}
 
-export default Login;
+export default function Login() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-zinc-100 text-xs font-semibold text-zinc-500">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
+  );
+}

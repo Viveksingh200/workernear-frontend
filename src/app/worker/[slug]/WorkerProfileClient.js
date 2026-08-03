@@ -18,7 +18,8 @@ export default function WorkerProfileClient({ initialWorker }) {
   // Security fallback for direct URL access by guest users
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      window.location.href = "/register";
+      const currentPath = window.location.pathname;
+      window.location.replace(`/register?redirect=${encodeURIComponent(currentPath)}`);
     }
   }, [isAuthenticated, loading]);
   const [phoneVisible, setPhoneVisible] = useState(false);

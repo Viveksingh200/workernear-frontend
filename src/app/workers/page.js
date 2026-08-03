@@ -18,7 +18,8 @@ function SearchResultsContent() {
   const handleProfileClick = (e, slug) => {
     if (!isAuthenticated) {
       e.preventDefault();
-      window.location.href = "/register";
+      const targetUrl = slug && slug !== "#" ? `/worker/${slug}` : "";
+      window.location.href = targetUrl ? `/register?redirect=${encodeURIComponent(targetUrl)}` : "/register";
     }
   };
 

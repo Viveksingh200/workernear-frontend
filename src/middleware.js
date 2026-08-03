@@ -15,14 +15,17 @@ export function middleware(request) {
 
   // Redirect authenticated users away from guest routes (e.g. login, register)
   if (authToken && isGuestRoute) {
+    const redirectUrl = request.nextUrl.searchParams.get('redirect');
+    if (redirectUrl && redirectUrl.startsWith('/')) {
+      return NextResponse.redirect(new URL(redirectUrl, request.url));
+    }
     return NextResponse.redirect(new URL('/', request.url));
   }
 
   // Redirect unauthenticated users away from protected routes to login
   if (!authToken && isProtectedRoute) {
-    // Optionally append a redirect parameter to send them back after login
     const loginUrl = new URL('/login', request.url);
-    // loginUrl.searchParams.set('redirect', pathname);
+    loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
 

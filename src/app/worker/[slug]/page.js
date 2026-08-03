@@ -26,17 +26,29 @@ export async function generateMetadata({ params }) {
 
   if (!worker) {
     return {
-      title: "Worker Profile | Local Service Finder",
+      title: "Worker Profile | WorkerNear",
       description: "Find trusted local professionals near you."
     };
   }
 
+  const locationString = worker.area ? `${worker.area}, ${worker.city}` : worker.city;
+  const title = `${worker.profession} in ${locationString} - ${worker.name} - ${worker.profession} near me | WorkerNear`;
+  const description = `Hire ${worker.name}, trusted ${worker.profession.toLowerCase()} in ${locationString}. Check verified ratings, experience, and customer reviews on WorkerNear.`;
+
   return {
-    title: `${worker.name} | ${worker.profession} in ${worker.city} | WorkerNear`,
-    description: `Hire ${worker.name}, a trusted ${worker.profession.toLowerCase()} in ${worker.city} with verified ratings, experience and customer reviews.`,
+    title: title,
+    description: description,
+    keywords: [
+      `${worker.profession} in ${worker.city}`,
+      `${worker.profession} in ${locationString}`,
+      `${worker.profession} near me`,
+      `${worker.name}`,
+      `best ${worker.profession.toLowerCase()} in ${worker.city}`,
+      `WorkerNear`
+    ],
     openGraph: {
-      title: `${worker.name} | ${worker.profession} in ${worker.city} | WorkerNear`,
-      description: `Hire ${worker.name}, a trusted ${worker.profession.toLowerCase()} in ${worker.city} with verified ratings, experience and customer reviews.`,
+      title: title,
+      description: description,
       images: worker.profileImage ? [{ url: getProfileImageUrl(worker.profileImage) }] : []
     }
   };
