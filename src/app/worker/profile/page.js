@@ -90,8 +90,8 @@ export default function WorkerProfilePage() {
   // Sync category state once categories and profile are loaded
   useEffect(() => {
     if (workerProfile && categories.length > 0) {
-      const firstCat = workerProfile.serviceCategories?.[0] || "";
-      if (firstCat) {
+      const firstCat = workerProfile.serviceCategories?.[0] || workerProfile.profession || "";
+      if (firstCat && firstCat !== "Pending Setup") {
         const isKnown = categories.some((c) => c.name.toLowerCase() === firstCat.toLowerCase());
         if (isKnown) {
           const matched = categories.find((c) => c.name.toLowerCase() === firstCat.toLowerCase());
@@ -204,7 +204,8 @@ export default function WorkerProfilePage() {
       return;
     }
 
-    const categoriesArray = finalCategory ? [finalCategory.trim()] : [];
+    const finalProfession = (profession && profession.trim() && profession !== "Pending Setup") ? profession.trim() : (finalCategory ? finalCategory.trim() : "Provider");
+    const categoriesArray = finalCategory ? [finalCategory.trim()] : (finalProfession && finalProfession !== "Provider" ? [finalProfession] : []);
     const areasArray = serviceAreas
       .split(",")
       .map((a) => a.trim())
@@ -220,8 +221,8 @@ export default function WorkerProfilePage() {
         body: JSON.stringify({
           name,
           phone,
-          profession,
-          experience: parseInt(experience),
+          profession: finalProfession,
+          experience: parseInt(experience) || 0,
           description,
           serviceCategories: categoriesArray,
           serviceAreas: areasArray,
@@ -242,13 +243,13 @@ export default function WorkerProfilePage() {
         updateUserState(data.user);
       }
       setProfileSuccess(
-        language === "hi" 
-          ? "व्यावसायिक प्रोफ़ाइल सफलतापूर्वक अपडेट की गई!" 
-          : "Professional profile updated successfully!"
+        data.worker.approved
+          ? (language === "hi" ? "व्यावसायिक प्रोफ़ाइल सफलतापूर्वक अपडेट की गई!" : "Professional profile updated successfully!")
+          : (t.profileUpdatedPendingApproval || "Profile updated! Your details are pending admin approval before listing.")
       );
       updateLocation({ city: data.worker.city, area: data.worker.area });
       window.scrollTo({ top: 0, behavior: "smooth" });
-      setTimeout(() => setProfileSuccess(""), 4000);
+      setTimeout(() => setProfileSuccess(""), 5000);
     } catch (err) {
       setProfileError(err.message || "Something went wrong.");
     } finally {
@@ -389,6 +390,23 @@ export default function WorkerProfilePage() {
           </div>
         </div>
 
+        {/* Approval Status Header Callout */}
+        {!workerProfile.approved && (
+          <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-4 mb-6 text-xs flex items-start gap-3 shadow-xs">
+            <ShieldAlert className="h-5 w-5 shrink-0 text-amber-600 mt-0.5" />
+            <div>
+              <p className="font-extrabold text-amber-950">
+                {language === "hi" ? "समीक्षा और स्वीकृति लंबित" : "Pending Admin Approval"}
+              </p>
+              <p className="mt-0.5 text-amber-800 leading-relaxed">
+                {language === "hi"
+                  ? "अपनी जानकारी भरें और सबमिट करें। व्यवस्थापक द्वारा स्वीकृत होने के बाद आपकी सेवाएं ग्राहकों को प्रदर्शित होंगी।"
+                  : "Please fill in your professional details below and click save. Once reviewed and approved by our team, your services will be published to customers."}
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Global Notifications */}
         {profileError && (
           <div className="bg-red-50 text-red-650 text-xs font-semibold p-4 rounded-2xl mb-6 shadow-sm shadow-red-500/5">
@@ -396,7 +414,7 @@ export default function WorkerProfilePage() {
           </div>
         )}
         {profileSuccess && (
-          <div className="bg-emerald-50 text-emerald-755 text-emerald-700 text-xs font-semibold p-4 rounded-2xl mb-6 shadow-sm shadow-emerald-500/5 flex items-center gap-2">
+          <div className="bg-emerald-50 text-emerald-700 text-xs font-semibold p-4 rounded-2xl mb-6 shadow-sm shadow-emerald-500/5 flex items-center gap-2">
             <CheckCircle className="h-4 w-4" />
             <span>{profileSuccess}</span>
           </div>
@@ -478,9 +496,13 @@ export default function WorkerProfilePage() {
                       <select
                         value={selectedCategory}
                         onChange={(e) => {
-                          setSelectedCategory(e.target.value);
-                          if (e.target.value !== "Others") {
+                          const val = e.target.value;
+                          setSelectedCategory(val);
+                          if (val !== "Others") {
                             setCustomCategory("");
+                            if (!profession || profession === "Pending Setup") {
+                              setProfession(val);
+                            }
                           }
                         }}
                         className="px-4 py-2.5 bg-zinc-100 hover:bg-zinc-150/50 focus:bg-white rounded-xl text-sm transition-all duration-200 outline-none focus:ring-2 focus:ring-amber-500/20 bg-white"

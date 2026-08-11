@@ -13,6 +13,7 @@ function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect");
+  const isAccountDeleted = searchParams.get("accountDeleted") === "true";
 
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -20,6 +21,12 @@ function LoginContent() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+
+  React.useEffect(() => {
+    if (isAccountDeleted) {
+      setError(t.accountDeleted || "Your account has been deleted by an administrator.");
+    }
+  }, [isAccountDeleted, t]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

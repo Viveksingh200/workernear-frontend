@@ -63,11 +63,14 @@ function RegisterContent() {
 
     const res = await register(payload);
     if (res.success) {
-      setSuccess("Registration successful! Redirecting to login page...");
+      const msg = role === "provider"
+        ? (t.providerRegSuccess || "Registration successful! Please log in to complete your profile to get admin approval.")
+        : "Registration successful! Redirecting to login page...";
+      setSuccess(msg);
       const loginUrl = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : "/login";
       setTimeout(() => {
         window.location.replace(loginUrl);
-      }, 1500);
+      }, role === "provider" ? 2500 : 1500);
     } else {
       setError(res.message || "Registration failed. Try again.");
       setLoading(false);

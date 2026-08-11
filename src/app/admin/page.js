@@ -284,7 +284,7 @@ export default function AdminDashboard() {
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50 text-zinc-900">
       <Navbar />
-      
+
       <main className="flex-grow max-w-7xl mx-auto px-6 lg:px-8 py-10 w-full animate-fadeIn">
         {/* Header Summary */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
@@ -320,23 +320,21 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-2 md:flex border border-gray-150 mb-8 bg-white rounded-xl p-1 shadow-sm gap-1">
           <button
             onClick={() => setActiveTab("approvals")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 rounded-lg text-xs font-extrabold cursor-pointer transition-all ${
-              activeTab === "approvals"
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 rounded-lg text-xs font-extrabold cursor-pointer transition-all ${activeTab === "approvals"
                 ? "bg-zinc-900 text-white shadow-sm"
                 : "text-zinc-500 hover:text-zinc-900"
-            }`}
+              }`}
           >
             <ShieldAlert className="h-4 w-4" />
             <span>Pending Approvals ({pendingWorkers.length})</span>
           </button>
-          
+
           <button
             onClick={() => setActiveTab("users")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 rounded-lg text-xs font-extrabold cursor-pointer transition-all ${
-              activeTab === "users"
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 rounded-lg text-xs font-extrabold cursor-pointer transition-all ${activeTab === "users"
                 ? "bg-zinc-900 text-white shadow-sm"
                 : "text-zinc-500 hover:text-zinc-900"
-            }`}
+              }`}
           >
             <Users className="h-4 w-4" />
             <span>Directory ({allUsers.length + allWorkers.length})</span>
@@ -344,11 +342,10 @@ export default function AdminDashboard() {
 
           <button
             onClick={() => setActiveTab("categories")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 rounded-lg text-xs font-extrabold cursor-pointer transition-all ${
-              activeTab === "categories"
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 rounded-lg text-xs font-extrabold cursor-pointer transition-all ${activeTab === "categories"
                 ? "bg-zinc-900 text-white shadow-sm"
                 : "text-zinc-500 hover:text-zinc-900"
-            }`}
+              }`}
           >
             <FolderKanban className="h-4 w-4" />
             <span>Manage Categories ({categories.length})</span>
@@ -356,11 +353,10 @@ export default function AdminDashboard() {
 
           <button
             onClick={() => setActiveTab("security")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 rounded-lg text-xs font-extrabold cursor-pointer transition-all ${
-              activeTab === "security"
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 rounded-lg text-xs font-extrabold cursor-pointer transition-all ${activeTab === "security"
                 ? "bg-zinc-900 text-white shadow-sm"
                 : "text-zinc-500 hover:text-zinc-900"
-            }`}
+              }`}
           >
             <ShieldCheck className="h-4 w-4" />
             <span>Security Settings</span>
@@ -489,7 +485,7 @@ export default function AdminDashboard() {
                   <div className="p-6 border-b border-gray-100 bg-zinc-50/50">
                     <h3 className="font-extrabold text-zinc-900 text-base">Workers Index ({allWorkers.length})</h3>
                   </div>
-                  
+
                   <div className="divide-y divide-gray-100 max-h-160 overflow-y-auto">
                     {allWorkers.map((w) => (
                       <div key={w._id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-zinc-50/50 text-xs text-left">
@@ -510,11 +506,10 @@ export default function AdminDashboard() {
                         <div className="flex gap-2 self-end sm:self-center shrink-0">
                           <button
                             onClick={() => handleToggleBlock(w.userId)}
-                            className={`px-2.5 py-1.5 rounded-lg border font-bold text-[9px] cursor-pointer ${
-                              allUsers.find((u) => u._id === w.userId)?.isBlocked
+                            className={`px-2.5 py-1.5 rounded-lg border font-bold text-[9px] cursor-pointer ${allUsers.find((u) => u._id === w.userId)?.isBlocked
                                 ? "bg-red-50 border-red-200 text-red-600"
                                 : "bg-white border-zinc-200 text-zinc-500 hover:bg-zinc-50"
-                            }`}
+                              }`}
                           >
                             {allUsers.find((u) => u._id === w.userId)?.isBlocked ? "Blocked" : "Block"}
                           </button>
@@ -551,11 +546,10 @@ export default function AdminDashboard() {
                         <div className="flex gap-2 self-end sm:self-center shrink-0">
                           <button
                             onClick={() => handleToggleBlock(u._id)}
-                            className={`px-3 py-1.5 rounded-lg border font-bold text-[9px] cursor-pointer ${
-                              u.isBlocked
+                            className={`px-3 py-1.5 rounded-lg border font-bold text-[9px] cursor-pointer ${u.isBlocked
                                 ? "bg-red-50 border-red-200 text-red-600"
                                 : "bg-white border-zinc-200 text-zinc-500 hover:bg-zinc-50"
-                            }`}
+                              }`}
                           >
                             {u.isBlocked ? "Blocked" : "Block"}
                           </button>
@@ -626,7 +620,7 @@ export default function AdminDashboard() {
                             <span className="text-zinc-800">{c.name}</span>
                             <span className="text-[10px] text-zinc-400 font-mono">({c.slug})</span>
                           </div>
-                          
+
                           <button
                             onClick={() => handleDeleteCategory(c._id)}
                             className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors cursor-pointer"

@@ -29,6 +29,7 @@ function SearchResultsContent() {
   const [city, setCity] = useState(searchParams.get("location") || "");
   const [area, setArea] = useState("");
   const [rating, setRating] = useState("");
+  const [sortBy, setSortBy] = useState("nearby");
   const [page, setPage] = useState(1);
 
   const [workers, setWorkers] = useState([]);
@@ -71,6 +72,7 @@ function SearchResultsContent() {
       if (city) queryParams.set("city", city);
       if (area) queryParams.set("area", area);
       if (rating) queryParams.set("rating", rating);
+      if (sortBy) queryParams.set("sortBy", sortBy);
       queryParams.set("page", page.toString());
       queryParams.set("limit", "10");
 
@@ -90,12 +92,19 @@ function SearchResultsContent() {
 
   useEffect(() => {
     fetchWorkersList();
-  }, [category, city, area, rating, page]);
+  }, [category, city, area, rating, sortBy, page]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     setPage(1);
     fetchWorkersList();
+  };
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const getStatusColor = (status) => {
@@ -202,12 +211,44 @@ function SearchResultsContent() {
 
         {/* Workers List Section */}
         <div className="flex flex-col gap-6">
-          <div className="flex justify-between items-center pb-2">
-            <h2 className="text-xl font-bold text-zinc-900">
-              {language === "hi"
-                ? `खोज परिणाम (${total} पेशेवर मिले)`
-                : `Search Results (${total} professionals found)`}
-            </h2>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+            <div>
+              <h2 className="text-xl font-black text-zinc-900">
+                {language === "hi"
+                  ? `खोज परिणाम (${total} पेशेवर मिले)`
+                  : `Search Results (${total} professionals found)`}
+              </h2>
+              <p className="text-xs text-zinc-400 font-semibold mt-0.5">
+                {language === "hi" ? "प्रति पेज 10 पेशेवर (नीचे पेज बदलें)" : "10 per page. Use pagination below to explore more."}
+              </p>
+            </div>
+
+            {/* Sort options */}
+            <div className="flex items-center gap-1.5 bg-zinc-200/60 p-1 rounded-2xl shrink-0 self-start sm:self-auto">
+              {[
+                { key: "nearby", labelEn: t.sortNearby || "Most Nearby", labelHi: t.sortNearby || "निकटतम" },
+                { key: "most_reviewed", labelEn: t.sortMostReviewed || "Most Reviewed", labelHi: t.sortMostReviewed || "सर्वाधिक समीक्षाएं" },
+                { key: "top_rated", labelEn: t.sortTopRated || "Highest Rated", labelHi: t.sortTopRated || "उच्चतम रेटिंग" }
+              ].map((opt) => {
+                const isActive = sortBy === opt.key;
+                return (
+                  <button
+                    key={opt.key}
+                    onClick={() => {
+                      setSortBy(opt.key);
+                      setPage(1);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+                      isActive
+                        ? "bg-white text-orange-600 shadow-xs"
+                        : "text-zinc-600 hover:text-zinc-900"
+                    }`}
+                  >
+                    {language === "hi" ? opt.labelHi : opt.labelEn}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {loading ? (
@@ -313,24 +354,48 @@ function SearchResultsContent() {
 
               {/* Pagination controls */}
               {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-2 mt-8">
-                  <button
-                    disabled={page === 1}
-                    onClick={() => setPage(page - 1)}
-                    className="px-4 py-2 border border-zinc-200 rounded-md text-xs font-semibold bg-white text-zinc-700 hover:bg-zinc-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                  >
-                    {language === "hi" ? "पिछला" : "Previous"}
-                  </button>
-                  <span className="text-xs text-zinc-500 font-medium px-2">
-                    {language === "hi" ? `पेज ${page} का ${totalPages}` : `Page ${page} of ${totalPages}`}
-                  </span>
-                  <button
-                    disabled={page === totalPages}
-                    onClick={() => setPage(page + 1)}
-                    className="px-4 py-2 border border-zinc-200 rounded-md text-xs font-semibold bg-white text-zinc-700 hover:bg-zinc-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                  >
-                    {language === "hi" ? "अगला" : "Next"}
-                  </button>
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-10 pt-6 border-t border-zinc-200/80">
+                  <p className="text-xs text-zinc-500 font-semibold">
+                    {language === "hi"
+                      ? `कुल ${total} में से ${((page - 1) * 10) + 1}-${Math.min(page * 10, total)} पेशेवर दिखा रहे हैं`
+                      : `Showing ${((page - 1) * 10) + 1}-${Math.min(page * 10, total)} of ${total} professionals`}
+                  </p>
+
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      disabled={page === 1}
+                      onClick={() => handlePageChange(page - 1)}
+                      className="px-3.5 py-2 border border-zinc-200 rounded-xl text-xs font-extrabold bg-white text-zinc-700 hover:bg-zinc-50 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-2xs"
+                    >
+                      {language === "hi" ? "« पिछला" : "« Prev"}
+                    </button>
+
+                    {[...Array(totalPages)].map((_, idx) => {
+                      const pageNum = idx + 1;
+                      const isCurrent = pageNum === page;
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => handlePageChange(pageNum)}
+                          className={`h-9 w-9 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                            isCurrent
+                              ? "bg-zinc-900 text-white shadow-md shadow-zinc-900/10 scale-105"
+                              : "bg-white text-zinc-700 border border-zinc-200 hover:bg-zinc-100"
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+
+                    <button
+                      disabled={page === totalPages}
+                      onClick={() => handlePageChange(page + 1)}
+                      className="px-3.5 py-2 border border-zinc-200 rounded-xl text-xs font-extrabold bg-white text-zinc-700 hover:bg-zinc-50 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-2xs"
+                    >
+                      {language === "hi" ? "अगला »" : "Next »"}
+                    </button>
+                  </div>
                 </div>
               )}
             </>

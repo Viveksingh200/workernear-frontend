@@ -157,6 +157,13 @@ export function AuthProvider({ children }) {
             }
           });
           const data = await res.json();
+          if (data.isDeleted || (data.message && data.message.toLowerCase().includes("deleted"))) {
+            setAuthSession(null);
+            if (typeof window !== "undefined") {
+              window.location.href = "/login?accountDeleted=true";
+            }
+            return;
+          }
           if (data.success) {
             setUser(data.user);
             setWorkerProfile(data.workerProfile || null);

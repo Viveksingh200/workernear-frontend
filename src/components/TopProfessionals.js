@@ -12,6 +12,9 @@ export default function TopProfessionals() {
   const { isAuthenticated, currentLocation } = useAuth();
   const [professionals, setProfessionals] = useState([]);
   const [isLocal, setIsLocal] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const handleProfileClick = (e, slug) => {
     if (!isAuthenticated) {
@@ -24,7 +27,7 @@ export default function TopProfessionals() {
   useEffect(() => {
     const fetchTopPros = async () => {
       try {
-        let url = `${API_BASE_URL}/workers?limit=4`;
+        let url = `${API_BASE_URL}/workers?limit=10&page=${page}`;
         if (currentLocation && currentLocation.city) {
           url += `&city=${encodeURIComponent(currentLocation.city)}`;
           if (currentLocation.area) {
@@ -45,12 +48,14 @@ export default function TopProfessionals() {
             bio: w.description || ""
           }));
           setProfessionals(mapped);
+          setTotal(data.total || mapped.length);
+          setTotalPages(data.totalPages || 1);
           setIsLocal(true);
         } else {
           // If query with area failed or returned empty, try city-only search first, or fallback to all top pros
           let cityOnlySuccess = false;
           if (currentLocation && currentLocation.city && currentLocation.area) {
-            const cityRes = await fetch(`${API_BASE_URL}/workers?city=${encodeURIComponent(currentLocation.city)}&limit=4`);
+            const cityRes = await fetch(`${API_BASE_URL}/workers?city=${encodeURIComponent(currentLocation.city)}&limit=10&page=${page}`);
             const cityData = await cityRes.json();
             if (cityData.success && cityData.workers && cityData.workers.length > 0) {
               const mapped = cityData.workers.map((w) => ({
@@ -63,6 +68,8 @@ export default function TopProfessionals() {
                 bio: w.description || ""
               }));
               setProfessionals(mapped);
+              setTotal(cityData.total || mapped.length);
+              setTotalPages(cityData.totalPages || 1);
               setIsLocal(true);
               cityOnlySuccess = true;
             }
@@ -70,7 +77,7 @@ export default function TopProfessionals() {
 
           if (!cityOnlySuccess) {
             console.log("No local workers found, falling back to all top professionals");
-            const fallbackRes = await fetch(`${API_BASE_URL}/workers?limit=4`);
+            const fallbackRes = await fetch(`${API_BASE_URL}/workers?limit=10&page=${page}`);
             const fallbackData = await fallbackRes.json();
             if (fallbackData.success && fallbackData.workers && fallbackData.workers.length > 0) {
               const mapped = fallbackData.workers.map((w) => ({
@@ -83,9 +90,13 @@ export default function TopProfessionals() {
                 bio: w.description || ""
               }));
               setProfessionals(mapped);
+              setTotal(fallbackData.total || mapped.length);
+              setTotalPages(fallbackData.totalPages || 1);
               setIsLocal(false);
             } else {
               setProfessionals(mockPros);
+              setTotal(mockPros.length);
+              setTotalPages(1);
               setIsLocal(false);
             }
           }
@@ -93,12 +104,14 @@ export default function TopProfessionals() {
       } catch (err) {
         console.error("Failed to load top professionals:", err);
         setProfessionals(mockPros);
+        setTotal(mockPros.length);
+        setTotalPages(1);
         setIsLocal(false);
       }
     };
 
     fetchTopPros();
-  }, [t, currentLocation]);
+  }, [t, currentLocation, page]);
 
   const mockPros = [
     {
@@ -140,7 +153,7 @@ export default function TopProfessionals() {
   ];
 
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 md:py-10 py-4 lg:px-8 bg-zinc-50/50 transition-colors duration-300">
+    <section id="top-professionals-section" className="mx-auto max-w-7xl px-4 sm:px-6 md:py-10 py-4 lg:px-8 bg-zinc-50/50 transition-colors duration-300">
       {/* Title */}
       <div className="pb-4 border-b border-gray-150 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div className="text-left">
@@ -246,6 +259,65 @@ export default function TopProfessionals() {
           </div>
         ))}
       </div>
+
+      {/* Interactive Pagination controls */}
+      {totalPages > 1 && (
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-zinc-200/80">
+          <p className="text-xs text-zinc-500 font-semibold">
+            {language === "hi"
+              ? `कुल ${total} में से ${((page - 1) * 10) + 1}-${Math.min(page * 10, total)} पेशेवर दिखा रहे हैं`
+              : `Showing ${((page - 1) * 10) + 1}-${Math.min(page * 10, total)} of ${total} professionals`}
+          </p>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              disabled={page === 1}
+              onClick={() => {
+                setPage(page - 1);
+                const el = document.getElementById("top-professionals-section");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="px-3.5 py-2 border border-zinc-200 rounded-xl text-xs font-extrabold bg-white text-zinc-700 hover:bg-zinc-50 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-2xs"
+            >
+              {language === "hi" ? "« पिछला" : "« Prev"}
+            </button>
+
+            {[...Array(totalPages)].map((_, idx) => {
+              const pageNum = idx + 1;
+              const isCurrent = pageNum === page;
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => {
+                    setPage(pageNum);
+                    const el = document.getElementById("top-professionals-section");
+                    if (el) el.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className={`h-9 w-9 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                    isCurrent
+                      ? "bg-zinc-900 text-white shadow-md shadow-zinc-900/10 scale-105"
+                      : "bg-white text-zinc-700 border border-zinc-200 hover:bg-zinc-100"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+
+            <button
+              disabled={page === totalPages}
+              onClick={() => {
+                setPage(page + 1);
+                const el = document.getElementById("top-professionals-section");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="px-3.5 py-2 border border-zinc-200 rounded-xl text-xs font-extrabold bg-white text-zinc-700 hover:bg-zinc-50 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-2xs"
+            >
+              {language === "hi" ? "अगला »" : "Next »"}
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

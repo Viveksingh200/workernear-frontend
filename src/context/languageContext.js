@@ -69,7 +69,18 @@ const translations = {
     workersNearYou: "Workers Near You",
     showingWorkersIn: "Showing professionals in",
     changeLocation: "Change Location",
-    useCurrentLocation: "Use Current Location"
+    useCurrentLocation: "Use Current Location",
+    providerRegSuccess: "Registration successful! Please log in to create & complete your profile to get admin approval.",
+    completeProfileTitle: "Action Required: Complete Your Profile",
+    completeProfileDesc: "Please complete your professional details (profession, categories, experience, description, location) so our administrators can review and approve your profile to show in search results.",
+    completeProfileButton: "Complete Profile Now",
+    awaitingApprovalTitle: "Profile Submitted - Awaiting Admin Approval",
+    awaitingApprovalDesc: "Thank you for submitting your profile! Your account details are under review by our team. Once approved, your services will appear in search results.",
+    profileUpdatedPendingApproval: "Professional profile saved! Your details are pending admin approval. We will activate your listing once verified.",
+    sortNearby: "Most Nearby",
+    sortMostReviewed: "Most Reviewed",
+    sortTopRated: "Highest Rated",
+    showingResultsCount: "Showing professionals"
   },
   hi: {
     brand: "WorkerNear",
@@ -137,7 +148,18 @@ const translations = {
     workersNearYou: "आपके आस-पास के पेशेवर",
     showingWorkersIn: "यहाँ पेशेवर दिखा रहे हैं:",
     changeLocation: "स्थान बदलें",
-    useCurrentLocation: "वर्तमान स्थान का उपयोग करें"
+    useCurrentLocation: "वर्तमान स्थान का उपयोग करें",
+    providerRegSuccess: "पंजीकरण सफल! कृपया व्यवस्थापक स्वीकृति प्राप्त करने के लिए अपनी प्रोफ़ाइल पूरी करने हेतु लॉगिन करें।",
+    completeProfileTitle: "कार्रवाई आवश्यक: अपनी प्रोफ़ाइल पूरी करें",
+    completeProfileDesc: "कृपया अपना व्यावसायिक विवरण (व्यवसाय, श्रेणियां, अनुभव, विवरण, स्थान) पूरा करें ताकि हमारे प्रशासक खोज परिणामों में दिखने के लिए आपकी प्रोफ़ाइल की समीक्षा और स्वीकृति दे सकें।",
+    completeProfileButton: "अभी प्रोफ़ाइल पूरी करें",
+    awaitingApprovalTitle: "प्रोफ़ाइल सबमिट की गई - व्यवस्थापक स्वीकृति की प्रतीक्षा है",
+    awaitingApprovalDesc: "अपनी प्रोफ़ाइल पूरी करने के लिए धन्यवाद! आपकी खाता जानकारी वर्तमान में हमारे प्रशासकों द्वारा समीक्षाधीन है। स्वीकृत होने के बाद आप खोज परिणामों में प्रदर्शित होंगे।",
+    profileUpdatedPendingApproval: "व्यावसायिक प्रोफ़ाइल सहेजी गई! आपकी प्रोफ़ाइल व्यवस्थापक स्वीकृति के लिए लंबित है। विवरण सत्यापित होने पर हम आपकी सूची सक्रिय करेंगे।",
+    sortNearby: "निकटतम स्थान",
+    sortMostReviewed: "सर्वाधिक समीक्षाएं",
+    sortTopRated: "उच्चतम रेटिंग",
+    showingResultsCount: "पेशेवर दिखाए जा रहे हैं"
   }
 };
 
