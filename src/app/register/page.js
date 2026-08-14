@@ -40,6 +40,7 @@ function RegisterContent() {
 
     if (!name || !phone || !password) {
       setError("All fields are required!");
+      setTimeout(() => setError(""), 5000);
       setLoading(false);
       return;
     }
@@ -47,6 +48,7 @@ function RegisterContent() {
     const finalCity = city === "Others" ? customCity : city;
     if (city === "Others" && !customCity.trim()) {
       setError("Please specify your custom city.");
+      setTimeout(() => setError(""), 5000);
       setLoading(false);
       return;
     }
@@ -73,6 +75,7 @@ function RegisterContent() {
       }, role === "provider" ? 2500 : 1500);
     } else {
       setError(res.message || "Registration failed. Try again.");
+      setTimeout(() => setError(""), 5000);
       setLoading(false);
     }
   };

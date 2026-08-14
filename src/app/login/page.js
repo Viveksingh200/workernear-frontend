@@ -36,6 +36,7 @@ function LoginContent() {
 
     if (!phone || !password) {
       setError("Please fill in all fields");
+      setTimeout(() => setError(""), 5000);
       setLoading(false);
       return;
     }
@@ -54,6 +55,7 @@ function LoginContent() {
       }
     } else {
       setError(res.message || "Invalid phone number or password");
+      setTimeout(() => setError(""), 5000);
       if (res.message === "Invalid credentials!") {
         setShowForgotPassword(true);
       }

@@ -18,7 +18,8 @@ import {
   Settings,
   TrendingUp,
   ArrowRight,
-  MessageSquare
+  MessageSquare,
+  MousePointerClick
 } from "lucide-react";
 
 export default function WorkerDashboard() {
@@ -103,6 +104,7 @@ export default function WorkerDashboard() {
     } catch (err) {
       console.error(err);
       setError("Failed to update availability status.");
+      setTimeout(() => setError(""), 5000);
     }
   };
 
@@ -111,13 +113,14 @@ export default function WorkerDashboard() {
       <Navbar />
 
       <main className="flex-grow max-w-7xl mx-auto px-6 lg:px-8 py-10 w-full animate-fadeIn">
-        {/* Top welcome banner */}
-        <div className="bg-gradient-to-r from-zinc-900 to-zinc-950 text-white rounded-3xl p-6 sm:p-8 mb-8 shadow-md">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        {/* Top welcome banner with Speech-Bubble Onboarding Guide */}
+        <div className="bg-gradient-to-r from-zinc-900 to-zinc-950 text-white rounded-3xl p-6 sm:p-8 mb-8 shadow-md relative">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
               <span className="bg-amber-500/10 text-amber-400 text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full">
                 {language === "hi" ? "व्यावसायिक पैनल" : "Professional Panel"}
               </span>
+
               <h1 className="text-3xl font-black tracking-tight mt-2.5">
                 {language === "hi" ? `नमस्ते, ${profile.name}` : `Welcome back, ${profile.name}`}
               </h1>
@@ -127,40 +130,73 @@ export default function WorkerDashboard() {
                   : "Review your performance statistics, update your booking availability, and manage your account details."}
               </p>
             </div>
-            <button
-              onClick={() => router.push("/worker/profile")}
-              className="flex items-center gap-2 bg-white text-zinc-900 hover:bg-zinc-100 font-extrabold text-xs px-5 py-3 rounded-xl cursor-pointer shadow-sm transition-all"
-            >
-              <Settings className="h-4 w-4" />
-              <span>{language === "hi" ? "प्रोफ़ाइल प्रबंधित करें" : "Edit Profile & Settings"}</span>
-            </button>
-          </div>
-        </div>
 
-        {/* Incomplete Profile Action Banner */}
-        {isProfileIncomplete && (
-          <div className="bg-amber-700 text-white rounded-3xl p-6 sm:p-7 mb-8 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 border border-amber-400/40 animate-fadeIn">
-            <div className="flex items-start gap-4">
-              <div>
-                <span className="bg-white/20 text-white text-[10px] font-extrabold tracking-wider uppercase px-2.5 py-0.5 rounded-full inline-block mb-1.5">
-                  {language === "hi" ? "प्रोफ़ाइल सेटअप आवश्यक" : "Action Required"}
-                </span>
-                <h3 className="font-black text-base sm:text-lg tracking-tight">
-                  {t.completeProfileTitle || "Action Required: Complete Your Profile"}
-                </h3>
-                <p className="text-xs text-amber-50 mt-1 leading-relaxed max-w-xl">
-                  {t.completeProfileDesc || "Please complete your professional details (profession, categories, experience, description, location) so our administrators can review and approve your profile to show in search results."}
-                </p>
+            {/* Action button container with Tapping Hand Cursor placed directly OVER the button */}
+            <div className="relative self-stretch md:self-auto flex flex-col items-stretch md:items-end pt-2 md:pt-0">
+              {isProfileIncomplete && (
+                <div className="mb-3 flex items-center gap-1.5 self-center md:self-center">
+                  <div className="text-amber-300 text-sm font-bold shadow-sm">
+                    <span>
+                      {language === "hi"
+                        ? "स्वीकृति (Approval) पाने के लिए प्रोफ़ाइल बनाएं"
+                        : "Create profile to get admin approval"}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <div className="relative group w-full md:w-auto">
+                {isProfileIncomplete && (
+                  <>
+                    {/* Glowing button background aura */}
+                    <span className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 opacity-80 blur-sm animate-pulse"></span>
+
+                    {/* Expanding click ring animation */}
+                    <span className="absolute inset-0 rounded-xl border-2 border-amber-300 animate-ping opacity-75 pointer-events-none"></span>
+
+                    {/* High-Definition Pointer Hand Cursor placed directly OVER the button clicking repeatedly */}
+                    <div className="absolute top-[115%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none flex items-center justify-center animate-tap-click">
+                      <div className="relative">
+                        {/* Synchronized Finger Click Ripple Wave */}
+                        <span className="absolute -top-3 -left-3 w-10 h-10 rounded-full border-2 border-amber-300 bg-amber-400/80 animate-tap-ripple pointer-events-none"></span>
+
+                        {/* Distinct Pointing Index Finger Hand Cursor SVG */}
+                        <svg
+                          className="w-14 h-14 drop-shadow-[0_10px_20px_rgba(0,0,0,0.9)] shrink-0"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9 2C8.44772 2 8 2.44772 8 3V12L6.70711 10.7071C6.31658 10.3166 5.68342 10.3166 5.29289 10.7071C4.90237 11.0976 4.90237 11.7308 5.29289 12.1213L9.58579 16.4142C10.3359 17.1643 11.3536 17.5858 12.4142 17.5858H14.5858C16.7949 17.5858 18.5858 15.7949 18.5858 13.5858V9C18.5858 8.44772 18.1381 8 17.5858 8C17.0335 8 16.5858 8.44772 16.5858 9V11H15.5858V7.5C15.5858 6.94772 15.1381 6.5 14.5858 6.5C14.0335 6.5 13.5858 6.94772 13.5858 7.5V11H12.5858V6C12.5858 5.44772 12.1381 5 11.5858 5C11.0335 5 10.5858 5.44772 10.5858 6V11H9.58579V3C9.58579 2.44772 9.13807 2 8.58579 2H9Z"
+                            fill="#FFFFFF"
+                            stroke="#000000"
+                            strokeWidth="1"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <button
+                  onClick={() => router.push("/worker/profile")}
+                  className={`relative w-full md:w-auto flex items-center justify-center gap-2.5 bg-white text-zinc-950 hover:bg-amber-50 font-black text-xs sm:text-sm px-7 py-4 rounded-xl cursor-pointer shadow-xl transition-all duration-200 hover:scale-[1.03] active:scale-95 border ${isProfileIncomplete ? "border-amber-300" : "border-zinc-200"
+                    }`}
+                >
+                  <Settings className="h-4.5 w-4.5 text-orange-600 shrink-0" />
+                  <span>
+                    {isProfileIncomplete
+                      ? (language === "hi" ? "प्रोफ़ाइल बनाएं और सेटिंग्स" : "Create Profile & Settings")
+                      : (language === "hi" ? "प्रोफ़ाइल प्रबंधित करें" : "Edit Profile & Settings")}
+                  </span>
+                </button>
               </div>
             </div>
-            <button
-              onClick={() => router.push("/worker/profile")}
-              className="bg-white text-orange-600 hover:bg-orange-50 font-extrabold text-xs px-6 py-3.5 rounded-xl cursor-pointer shadow-md transition-all whitespace-nowrap shrink-0 self-stretch sm:self-auto text-center hover:scale-105 active:scale-95"
-            >
-              {t.completeProfileButton || "Complete Profile Now"}
-            </button>
           </div>
-        )}
+        </div>
 
         {/* Pending Approval Banner (when profile complete but awaiting admin approval) */}
         {!isProfileIncomplete && !profile.approved && (
@@ -279,7 +315,7 @@ export default function WorkerDashboard() {
               ) : (
                 <div className="flex flex-col gap-6">
                   {reviews.map((r, i) => (
-                    <div key={r._id} className="pb-6 mb-2">
+                    <div key={r._id} className="pb-5 border-b border-gray-100 last:border-0 last:pb-0">
                       <div className="flex justify-between items-start gap-4 mb-2">
                         <div>
                           <h4 className="font-bold text-xs text-zinc-800">{r.userId?.name || "Client"}</h4>
@@ -296,7 +332,9 @@ export default function WorkerDashboard() {
                           ))}
                         </div>
                       </div>
-                      <p className="text-xs text-zinc-600 leading-relaxed bg-zinc-50 p-4 rounded-2xl mt-1">{r.comment || "(No text review)"}</p>
+                      {r.comment && r.comment.trim() !== "" && (
+                        <p className="text-xs text-zinc-600 leading-relaxed bg-zinc-50 p-4 rounded-2xl mt-1">{r.comment}</p>
+                      )}
                     </div>
                   ))}
                 </div>

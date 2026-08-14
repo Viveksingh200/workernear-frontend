@@ -70,3 +70,47 @@ form.hero-search-form input:not([type="submit"]):not([type="button"]):not([type=
 form.hero-search-form input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):focus {
   background-color: transparent !important;
 }
+
+/* Continuous clicking hand cursor animation */
+@keyframes tapClick {
+  0%, 100% {
+    transform: translate(0, 0) scale(1.05);
+  }
+  35% {
+    transform: translate(-2px, 3px) scale(0.85);
+  }
+  45% {
+    transform: translate(-2px, 3px) scale(0.80);
+  }
+  65% {
+    transform: translate(0, 0) scale(1.05);
+  }
+}
+
+.animate-tap-click {
+  animation: tapClick 1.1s infinite ease-in-out;
+}
+
+/* Synchronized click ripple wave that expands right when hand presses down */
+@keyframes tapRipple {
+  0%, 35% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(0.7);
+    opacity: 0.95;
+  }
+  65% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+}
+
+.animate-tap-ripple {
+  animation: tapRipple 1.1s infinite ease-in-out;
+}

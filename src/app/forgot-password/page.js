@@ -41,6 +41,7 @@ const ForgotPassword = () => {
 
     if (!phone) {
       setError("Please enter your phone number");
+      setTimeout(() => setError(""), 5000);
       setLoading(false);
       return;
     }
@@ -48,10 +49,12 @@ const ForgotPassword = () => {
     const res = await requestPasswordReset(phone);
     if (res.success) {
       setSuccess(res.message || "OTP sent to your phone number.");
+      setTimeout(() => setSuccess(""), 4000);
       setStep(2);
       setTimer(60); // 1 minute timer
     } else {
       setError(res.message || "Failed to send OTP");
+      setTimeout(() => setError(""), 5000);
     }
     setLoading(false);
   };
@@ -64,6 +67,7 @@ const ForgotPassword = () => {
 
     if (!otp || !newPassword) {
       setError("Please fill in all fields");
+      setTimeout(() => setError(""), 5000);
       setLoading(false);
       return;
     }
@@ -76,6 +80,7 @@ const ForgotPassword = () => {
       }, 2000);
     } else {
       setError(res.message || "Failed to reset password");
+      setTimeout(() => setError(""), 5000);
     }
     setLoading(false);
   };

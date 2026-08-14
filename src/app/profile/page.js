@@ -83,6 +83,7 @@ export default function UserProfile() {
       setTimeout(() => setProfileSuccess(""), 3000);
     } catch (err) {
       setProfileError(err.message || "Something went wrong.");
+      setTimeout(() => setProfileError(""), 5000);
     } finally {
       setUpdatingProfile(false);
     }
@@ -97,12 +98,14 @@ export default function UserProfile() {
 
     if (newPassword !== confirmPassword) {
       setPasswordError("New passwords do not match!");
+      setTimeout(() => setPasswordError(""), 5000);
       setUpdatingPassword(false);
       return;
     }
 
     if (newPassword.length < 6) {
       setPasswordError("Password must be at least 6 characters long.");
+      setTimeout(() => setPasswordError(""), 5000);
       setUpdatingPassword(false);
       return;
     }
@@ -130,6 +133,7 @@ export default function UserProfile() {
       setTimeout(() => setPasswordSuccess(""), 3000);
     } catch (err) {
       setPasswordError(err.message || "Something went wrong.");
+      setTimeout(() => setPasswordError(""), 5000);
     } finally {
       setUpdatingPassword(false);
     }

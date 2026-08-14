@@ -113,8 +113,15 @@ export default function WorkerProfilePage() {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      setUploadError(language === "hi" ? "फ़ाइल का आकार 5MB से कम होना चाहिए।" : "File size must be less than 5MB.");
+    if (file.size === 0) {
+      setUploadError(language === "hi" ? "फ़ाइल खाली नहीं हो सकती।" : "Profile photo file cannot be empty.");
+      setTimeout(() => setUploadError(""), 5000);
+      return;
+    }
+
+    if (file.size > 1 * 1024 * 1024) {
+      setUploadError(language === "hi" ? "फ़ाइल का आकार 1MB से अधिक नहीं होना चाहिए।" : "File size must be between 0 and 1MB.");
+      setTimeout(() => setUploadError(""), 5000);
       return;
     }
 
@@ -146,6 +153,7 @@ export default function WorkerProfilePage() {
       } catch (err) {
         console.error("Upload error:", err);
         setUploadError(err.message || (language === "hi" ? "अपलोड करने में विफल।" : "Failed to upload image."));
+        setTimeout(() => setUploadError(""), 5000);
       } finally {
         setUploading(false);
       }
@@ -176,6 +184,7 @@ export default function WorkerProfilePage() {
         await handleImageChange(event);
       } else {
         setUploadError(language === "hi" ? "कृपया केवल चित्र फ़ाइलें अपलोड करें।" : "Please upload image files only.");
+        setTimeout(() => setUploadError(""), 5000);
       }
     }
   };
@@ -252,6 +261,7 @@ export default function WorkerProfilePage() {
       setTimeout(() => setProfileSuccess(""), 5000);
     } catch (err) {
       setProfileError(err.message || "Something went wrong.");
+      setTimeout(() => setProfileError(""), 5000);
     } finally {
       setSaving(false);
     }
@@ -302,6 +312,7 @@ export default function WorkerProfilePage() {
         } catch (err) {
           console.error("Reverse geocoding failed:", err);
           setProfileError(language === "hi" ? "स्थान पता करने में विफलता।" : "Failed to resolve GPS coordinates.");
+          setTimeout(() => setProfileError(""), 5000);
         } finally {
           setFetchingLocation(false);
         }
@@ -309,6 +320,7 @@ export default function WorkerProfilePage() {
       (error) => {
         console.error("GPS fetching failed:", error);
         setProfileError(language === "hi" ? "स्थान की अनुमति अस्वीकृत की गई।" : "Geolocation access was denied or timed out.");
+        setTimeout(() => setProfileError(""), 5000);
         setFetchingLocation(false);
       },
       { timeout: 8000 }
@@ -324,12 +336,14 @@ export default function WorkerProfilePage() {
 
     if (newPassword !== confirmPassword) {
       setPasswordError("New passwords do not match!");
+      setTimeout(() => setPasswordError(""), 5000);
       setUpdatingPassword(false);
       return;
     }
 
     if (newPassword.length < 6) {
       setPasswordError("Password must be at least 6 characters long.");
+      setTimeout(() => setPasswordError(""), 5000);
       setUpdatingPassword(false);
       return;
     }
@@ -357,6 +371,7 @@ export default function WorkerProfilePage() {
       setTimeout(() => setPasswordSuccess(""), 3000);
     } catch (err) {
       setPasswordError(err.message || "Something went wrong.");
+      setTimeout(() => setPasswordError(""), 5000);
     } finally {
       setUpdatingPassword(false);
     }
@@ -426,10 +441,113 @@ export default function WorkerProfilePage() {
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm shadow-zinc-200/50">
               <form onSubmit={handleSaveProfile} className="flex flex-col gap-6">
                 
-                {/* Section title: Personal Details */}
+                {/* Section title: verification credentials */}
                 <div>
                   <h3 className="font-black text-xs text-orange-600 tracking-wider uppercase mb-4">
-                    {language === "hi" ? "1. व्यक्तिगत विवरण" : "1. Personal Information"}
+                    {language === "hi" ? "1. सत्यापन एवं मीडिया" : "1. Identity Verification & Media"}
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2 md:col-span-2">
+                      <label className="text-xs font-bold text-zinc-500">
+                        {language === "hi" ? "प्रोफ़ाइल फोटो" : "Profile Photo"}
+                      </label>
+                      
+                      <div className={`flex flex-col sm:flex-row items-center gap-6 p-4 rounded-2xl bg-zinc-50 border border-dashed hover:border-amber-500 transition-colors relative ${dragActive ? "border-amber-500 bg-amber-50/20" : "border-zinc-200"}`}>
+                        {/* Drag overlay trigger */}
+                        <div
+                          onDragEnter={handleDrag}
+                          onDragOver={handleDrag}
+                          onDragLeave={handleDrag}
+                          onDrop={handleDrop}
+                          className="absolute inset-0 z-10 rounded-2xl cursor-pointer"
+                        />
+
+                        {/* Preview and Edit button */}
+                        <div className="relative group h-24 w-24 rounded-2xl border border-zinc-200 overflow-hidden bg-white shrink-0 flex items-center justify-center shadow-sm z-20">
+                          {profileImage ? (
+                            <img
+                              src={getProfileImageUrl(profileImage)}
+                              alt="Avatar Preview"
+                              className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="h-full w-full flex items-center justify-center bg-amber-50 text-amber-600 font-extrabold text-3xl">
+                              {name ? name.charAt(0).toUpperCase() : <User className="h-8 w-8 text-amber-500" />}
+                            </div>
+                          )}
+
+                          {uploading && (
+                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white z-30">
+                              <Loader2 className="h-6 w-6 animate-spin" />
+                            </div>
+                          )}
+                          
+                          {/* Hover edit camera overlay */}
+                          <label className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-20">
+                            <Camera className="h-6 w-6 text-white" />
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleImageChange}
+                              disabled={uploading}
+                              className="hidden"
+                            />
+                          </label>
+                        </div>
+
+                        {/* File Selector details / drag details */}
+                        <div className="flex-1 text-center sm:text-left z-20">
+                          <p className="text-xs font-bold text-zinc-700">
+                            {uploading 
+                              ? (language === "hi" ? "अपलोड किया जा रहा है..." : "Uploading image...") 
+                              : (language === "hi" ? "खींचें और छोड़ें या ब्राउज़ करें" : "Drag & drop your photo or browse")}
+                          </p>
+                          <p className="text-[10px] text-zinc-400 mt-1">
+                            {language === "hi" 
+                              ? "JPEG, PNG, WebP सपोर्टेड। अधिकतम 1MB।" 
+                              : "Supports JPG, PNG, or WebP. Max size 1MB."}
+                          </p>
+                          
+                          <div className="flex items-center gap-3 mt-3 justify-center sm:justify-start">
+                            <label className="px-3.5 py-1.5 text-[11px] font-bold bg-white border border-zinc-200 text-zinc-700 rounded-lg shadow-sm hover:bg-zinc-50 cursor-pointer transition-colors">
+                              <span>{language === "hi" ? "फोटो चुनें" : "Select File"}</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                disabled={uploading}
+                                className="hidden"
+                              />
+                            </label>
+
+                            {profileImage && (
+                              <button
+                                type="button"
+                                onClick={() => setProfileImage("")}
+                                className="text-[11px] font-bold text-red-500 hover:text-red-600 transition-colors flex items-center gap-1 cursor-pointer"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                                <span>{language === "hi" ? "हटाएं" : "Remove"}</span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {uploadError && (
+                        <p className="text-[10px] text-red-655 bg-red-50 px-3 py-1.5 rounded-lg border border-red-100 font-semibold w-fit mt-1">
+                          {uploadError}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section title: Personal Details */}
+                <div className="mt-2">
+                  <h3 className="font-black text-xs text-orange-600 tracking-wider uppercase mb-4">
+                    {language === "hi" ? "2. व्यक्तिगत विवरण" : "2. Personal Information"}
                   </h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -462,7 +580,7 @@ export default function WorkerProfilePage() {
                 {/* Section title: Professional Details */}
                 <div className="mt-2">
                   <h3 className="font-black text-xs text-orange-600 tracking-wider uppercase mb-4">
-                    {language === "hi" ? "2. व्यावसायिक विवरण" : "2. Professional Information"}
+                    {language === "hi" ? "3. व्यावसायिक विवरण" : "3. Professional Information"}
                   </h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -611,109 +729,7 @@ export default function WorkerProfilePage() {
                   </div>
                 </div>
 
-                {/* Section title: verification credentials */}
-                <div className="mt-2">
-                  <h3 className="font-black text-xs text-orange-600 tracking-wider uppercase mb-4">
-                    {language === "hi" ? "3. सत्यापन एवं मीडिया" : "3. Identity Verification & Media"}
-                  </h3>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-2 md:col-span-2">
-                      <label className="text-xs font-bold text-zinc-500">
-                        {language === "hi" ? "प्रोफ़ाइल फोटो" : "Profile Photo"}
-                      </label>
-                      
-                      <div className={`flex flex-col sm:flex-row items-center gap-6 p-4 rounded-2xl bg-zinc-50 border border-dashed hover:border-amber-500 transition-colors relative ${dragActive ? "border-amber-500 bg-amber-50/20" : "border-zinc-200"}`}>
-                        {/* Drag overlay trigger */}
-                        <div
-                          onDragEnter={handleDrag}
-                          onDragOver={handleDrag}
-                          onDragLeave={handleDrag}
-                          onDrop={handleDrop}
-                          className="absolute inset-0 z-10 rounded-2xl cursor-pointer"
-                        />
-
-                        {/* Preview and Edit button */}
-                        <div className="relative group h-24 w-24 rounded-2xl border border-zinc-200 overflow-hidden bg-white shrink-0 flex items-center justify-center shadow-sm z-20">
-                          {profileImage ? (
-                            <img
-                              src={getProfileImageUrl(profileImage)}
-                              alt="Avatar Preview"
-                              className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                          ) : (
-                            <div className="h-full w-full flex items-center justify-center bg-amber-50 text-amber-600 font-extrabold text-3xl">
-                              {name ? name.charAt(0).toUpperCase() : <User className="h-8 w-8 text-amber-500" />}
-                            </div>
-                          )}
-
-                          {uploading && (
-                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white z-30">
-                              <Loader2 className="h-6 w-6 animate-spin" />
-                            </div>
-                          )}
-                          
-                          {/* Hover edit camera overlay */}
-                          <label className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-20">
-                            <Camera className="h-6 w-6 text-white" />
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleImageChange}
-                              disabled={uploading}
-                              className="hidden"
-                            />
-                          </label>
-                        </div>
-
-                        {/* File Selector details / drag details */}
-                        <div className="flex-1 text-center sm:text-left z-20">
-                          <p className="text-xs font-bold text-zinc-700">
-                            {uploading 
-                              ? (language === "hi" ? "अपलोड किया जा रहा है..." : "Uploading image...") 
-                              : (language === "hi" ? "खींचें और छोड़ें या ब्राउज़ करें" : "Drag & drop your photo or browse")}
-                          </p>
-                          <p className="text-[10px] text-zinc-400 mt-1">
-                            {language === "hi" 
-                              ? "JPEG, PNG, WebP सपोर्टेड। अधिकतम 5MB।" 
-                              : "Supports JPG, PNG, or WebP. Max size 5MB."}
-                          </p>
-                          
-                          <div className="flex items-center gap-3 mt-3 justify-center sm:justify-start">
-                            <label className="px-3.5 py-1.5 text-[11px] font-bold bg-white border border-zinc-200 text-zinc-700 rounded-lg shadow-sm hover:bg-zinc-50 cursor-pointer transition-colors">
-                              <span>{language === "hi" ? "फोटो चुनें" : "Select File"}</span>
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                disabled={uploading}
-                                className="hidden"
-                              />
-                            </label>
-
-                            {profileImage && (
-                              <button
-                                type="button"
-                                onClick={() => setProfileImage("")}
-                                className="text-[11px] font-bold text-red-500 hover:text-red-600 transition-colors flex items-center gap-1 cursor-pointer"
-                              >
-                                <Trash2 className="h-3 w-3" />
-                                <span>{language === "hi" ? "हटाएं" : "Remove"}</span>
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {uploadError && (
-                        <p className="text-[10px] text-red-655 bg-red-50 px-3 py-1.5 rounded-lg border border-red-100 font-semibold w-fit mt-1">
-                          {uploadError}
-                        </p>
-                      )}
-                    </div>
-                    
-                  </div>
-                </div>
 
                 {profileError && (
                   <div className="bg-red-50 text-red-650 text-xs font-semibold p-4 rounded-2xl text-left border border-red-100 shadow-sm shadow-red-500/5">
