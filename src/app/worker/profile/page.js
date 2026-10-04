@@ -32,6 +32,7 @@ export default function WorkerProfilePage() {
   const [profession, setProfession] = useState("");
   const [experience, setExperience] = useState(0);
   const [description, setDescription] = useState("");
+  const [description_hi, setDescriptionHi] = useState("");
   const [city, setCity] = useState("");
   const [area, setArea] = useState("");
   const [country, setCountry] = useState("");
@@ -60,13 +61,15 @@ export default function WorkerProfilePage() {
     if (workerProfile) {
       setName(workerProfile.name || "");
       setPhone(workerProfile.phone || "");
-      setProfession(workerProfile.profession === "Pending Setup" ? "" : (workerProfile.profession || ""));
+      const cleanProf = (workerProfile.profession === "Pending Setup" || workerProfile.profession === "Pending") ? "" : (workerProfile.profession || "");
+      setProfession(cleanProf);
       setExperience(workerProfile.experience || 0);
       setDescription(workerProfile.description || "");
+      setDescriptionHi(workerProfile.description_hi || "");
       setServiceAreas(workerProfile.serviceAreas?.join(", ") || "");
-      setCity(workerProfile.city || "");
-      setArea(workerProfile.area || "");
-      setCountry(workerProfile.country || "");
+      setCity((workerProfile.city === "Pending" || !workerProfile.city) ? "" : workerProfile.city);
+      setArea((workerProfile.area === "Pending" || !workerProfile.area) ? "" : workerProfile.area);
+      setCountry((workerProfile.country === "Pending" || !workerProfile.country) ? "" : workerProfile.country);
       setProfileImage(workerProfile.profileImage || "");
     }
   }, [workerProfile]);
@@ -233,6 +236,7 @@ export default function WorkerProfilePage() {
           profession: finalProfession,
           experience: parseInt(experience) || 0,
           description,
+          description_hi,
           serviceCategories: categoriesArray,
           serviceAreas: areasArray,
           city,
@@ -253,7 +257,7 @@ export default function WorkerProfilePage() {
       }
       setProfileSuccess(
         data.worker.approved
-          ? (language === "hi" ? "व्यावसायिक प्रोफ़ाइल सफलतापूर्वक अपडेट की गई!" : "Professional profile updated successfully!")
+          ? (language === "hi" ? "वर्कर प्रोफ़ाइल सफलतापूर्वक अपडेट की गई!" : "Worker profile updated successfully!")
           : (t.profileUpdatedPendingApproval || "Profile updated! Your details are pending admin approval before listing.")
       );
       updateLocation({ city: data.worker.city, area: data.worker.area });
@@ -397,7 +401,7 @@ export default function WorkerProfilePage() {
               <span>Back to Dashboard</span>
             </button>
             <h1 className="text-3xl font-black tracking-tight text-zinc-900">
-              {language === "hi" ? "व्यावसायिक प्रोफ़ाइल और सेटिंग्स" : "Professional Profile & Settings"}
+              {language === "hi" ? "वर्कर प्रोफ़ाइल और सेटिंग्स" : "Worker Profile & Settings"}
             </h1>
             <p className="text-xs text-zinc-400 font-semibold uppercase mt-1 tracking-wider">
               {language === "hi" ? "सत्यापन विवरण, सेवा सूची और पासवर्ड प्रबंधित करें" : "Manage verification details, service listings and password"}
@@ -416,7 +420,7 @@ export default function WorkerProfilePage() {
               <p className="mt-0.5 text-amber-800 leading-relaxed">
                 {language === "hi"
                   ? "अपनी जानकारी भरें और सबमिट करें। व्यवस्थापक द्वारा स्वीकृत होने के बाद आपकी सेवाएं ग्राहकों को प्रदर्शित होंगी।"
-                  : "Please fill in your professional details below and click save. Once reviewed and approved by our team, your services will be published to customers."}
+                  : "Please fill in your worker details below and click save. Once reviewed and approved by our team, your services will be published to customers."}
               </p>
             </div>
           </div>
@@ -566,11 +570,18 @@ export default function WorkerProfilePage() {
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-bold text-zinc-500">{t.phoneNumber}</label>
                       <input
-                        type="text"
+                        type="tel"
                         value={phone}
-                        disabled
-                        className="px-4 py-2.5 bg-zinc-50 text-zinc-400 rounded-xl text-sm cursor-not-allowed"
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder={t.phonePlaceholder || "Enter your phone number (e.g. +91 9876543210)"}
+                        className="px-4 py-2.5 bg-zinc-100 hover:bg-zinc-150/50 focus:bg-white rounded-xl text-sm transition-all duration-200 outline-none focus:ring-2 focus:ring-amber-500/20 text-zinc-800"
+                        required
                       />
+                      <span className="text-[10px] text-zinc-400">
+                        {language === "hi"
+                          ? "ग्राहक आपको सीधे कॉल करने के लिए इस नंबर का उपयोग करेंगे।"
+                          : "Customers will use this number to contact and call you directly."}
+                      </span>
                     </div>
 
 
@@ -580,7 +591,7 @@ export default function WorkerProfilePage() {
                 {/* Section title: Professional Details */}
                 <div className="mt-2">
                   <h3 className="font-black text-xs text-orange-600 tracking-wider uppercase mb-4">
-                    {language === "hi" ? "3. व्यावसायिक विवरण" : "3. Professional Information"}
+                    {language === "hi" ? "3. वर्कर विवरण" : "3. Worker Information"}
                   </h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -651,14 +662,27 @@ export default function WorkerProfilePage() {
                     )}
 
                     <div className="flex flex-col gap-1.5 md:col-span-2">
-                      <label className="text-xs font-bold text-zinc-500">{language === "hi" ? "सेवा विवरण" : "Service Description"}</label>
+                      <label className="text-xs font-bold text-zinc-500">{language === "hi" ? "सेवा विवरण (अंग्रेजी)" : "Service Description (English)"}</label>
                       <textarea
-                        rows={4}
+                        rows={3}
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Provide details about your expertise..."
+                        placeholder="Provide details about your expertise in English..."
                         className="px-4 py-2.5 bg-zinc-100 hover:bg-zinc-150/50 focus:bg-white rounded-xl text-sm transition-all duration-200 outline-none focus:ring-2 focus:ring-amber-500/20 resize-none"
                         required
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5 md:col-span-2">
+                      <label className="text-xs font-bold text-zinc-500">
+                        {language === "hi" ? "सेवा विवरण (हिंदी - वैकल्पिक)" : "Service Description (Hindi - Optional)"}
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={description_hi}
+                        onChange={(e) => setDescriptionHi(e.target.value)}
+                        placeholder={language === "hi" ? "अपनी सेवाओं और अनुभव का विवरण हिंदी में लिखें..." : "Enter your service details in Hindi (optional)..."}
+                        className="px-4 py-2.5 bg-zinc-100 hover:bg-zinc-150/50 focus:bg-white rounded-xl text-sm transition-all duration-200 outline-none focus:ring-2 focus:ring-amber-500/20 resize-none"
                       />
                     </div>
 

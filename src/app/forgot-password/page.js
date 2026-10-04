@@ -11,7 +11,7 @@ const ForgotPassword = () => {
   const router = useRouter();
 
   const [step, setStep] = useState(1);
-  const [phone, setPhone] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -39,16 +39,16 @@ const ForgotPassword = () => {
     setSuccess("");
     setLoading(true);
 
-    if (!phone) {
-      setError("Please enter your phone number");
+    if (!identifier) {
+      setError("Please enter your email address or phone number");
       setTimeout(() => setError(""), 5000);
       setLoading(false);
       return;
     }
 
-    const res = await requestPasswordReset(phone);
+    const res = await requestPasswordReset(identifier);
     if (res.success) {
-      setSuccess(res.message || "OTP sent to your phone number.");
+      setSuccess(res.message || "OTP generated for password reset.");
       setTimeout(() => setSuccess(""), 4000);
       setStep(2);
       setTimer(60); // 1 minute timer
@@ -72,7 +72,7 @@ const ForgotPassword = () => {
       return;
     }
 
-    const res = await resetPasswordWithOtp(phone, otp, newPassword);
+    const res = await resetPasswordWithOtp(identifier, otp, newPassword);
     if (res.success) {
       setSuccess("Password reset successfully! Redirecting to login...");
       setTimeout(() => {
@@ -98,7 +98,7 @@ const ForgotPassword = () => {
         <div className="flex flex-col justify-center gap-1 mb-6">
           <h2 className="font-bold text-3xl text-zinc-900">Reset Password</h2>
           <p className="text-zinc-400 md:text-sm text-xs">
-            {step === 1 ? "Enter your phone number to receive an OTP." : "Enter the OTP and your new password."}
+            {step === 1 ? "Enter your email or phone number to receive an OTP." : "Enter the OTP and your new password."}
           </p>
         </div>
 
@@ -117,15 +117,15 @@ const ForgotPassword = () => {
         {step === 1 ? (
           <form onSubmit={handleRequestOtp} className="flex flex-col gap-6 w-full">
             <div className="flex flex-col">
-              <label htmlFor="phone" className="text-zinc-700 font-semibold text-sm">
-                Phone Number
+              <label htmlFor="identifier" className="text-zinc-700 font-semibold text-sm">
+                Email or Phone Number
               </label>
               <input
-                id="phone"
+                id="identifier"
                 type="text"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="e.g., 9876543210"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                placeholder="name@example.com or phone number"
                 className="px-4 py-2 mt-2 border border-zinc-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm text-zinc-900 placeholder-zinc-400"
                 required
               />

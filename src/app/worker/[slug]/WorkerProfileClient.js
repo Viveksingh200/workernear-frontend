@@ -7,6 +7,7 @@ import { useLanguage } from "@/context/languageContext";
 import { Star, MapPin, Phone, Award, ShieldCheck, Heart, Send, CheckCircle2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { WorkerProfileSkeleton, ReviewCardSkeleton } from "@/components/Skeletons";
+import { getLocalizedBio } from "@/utils/translateBio";
 
 export default function WorkerProfileClient({ initialWorker }) {
   const { user, isAuthenticated, loading } = useAuth();
@@ -320,7 +321,7 @@ export default function WorkerProfileClient({ initialWorker }) {
                 {language === "hi" ? "मेरे बारे में" : "About Me"}
               </h2>
               <p className="text-sm text-zinc-600 leading-relaxed whitespace-pre-line">
-                {worker.description || (language === "hi" ? "इस पेशेवर ने अभी तक कोई विवरण नहीं लिखा है।" : "This professional has not provided a description yet.")}
+                {getLocalizedBio(worker.description, language, worker.description_hi)}
               </p>
             </div>
 

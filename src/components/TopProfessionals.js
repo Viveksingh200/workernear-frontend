@@ -6,6 +6,7 @@ import { useLanguage } from "../context/languageContext";
 import { useAuth } from "../context/authContext";
 import { Star } from "lucide-react";
 import { API_BASE_URL, getProfileImageUrl } from "@/config";
+import { getLocalizedBio } from "@/utils/translateBio";
 
 export default function TopProfessionals() {
   const { t, language } = useLanguage();
@@ -45,7 +46,8 @@ export default function TopProfessionals() {
             rating: Math.round(w.rating) || 5,
             reviewsCount: w.totalReviews || 0,
             slug: w.slug,
-            bio: w.description || ""
+            bio: w.description || "",
+            bio_hi: w.description_hi || ""
           }));
           setProfessionals(mapped);
           setTotal(data.total || mapped.length);
@@ -65,7 +67,8 @@ export default function TopProfessionals() {
                 rating: Math.round(w.rating) || 5,
                 reviewsCount: w.totalReviews || 0,
                 slug: w.slug,
-                bio: w.description || ""
+                bio: w.description || "",
+                bio_hi: w.description_hi || ""
               }));
               setProfessionals(mapped);
               setTotal(cityData.total || mapped.length);
@@ -87,15 +90,16 @@ export default function TopProfessionals() {
                 rating: Math.round(w.rating) || 5,
                 reviewsCount: w.totalReviews || 0,
                 slug: w.slug,
-                bio: w.description || ""
+                bio: w.description || "",
+                bio_hi: w.description_hi || ""
               }));
               setProfessionals(mapped);
               setTotal(fallbackData.total || mapped.length);
               setTotalPages(fallbackData.totalPages || 1);
               setIsLocal(false);
             } else {
-              setProfessionals(mockPros);
-              setTotal(mockPros.length);
+              setProfessionals([]);
+              setTotal(0);
               setTotalPages(1);
               setIsLocal(false);
             }
@@ -103,8 +107,8 @@ export default function TopProfessionals() {
         }
       } catch (err) {
         console.error("Failed to load top professionals:", err);
-        setProfessionals(mockPros);
-        setTotal(mockPros.length);
+        setProfessionals([]);
+        setTotal(0);
         setTotalPages(1);
         setIsLocal(false);
       }
@@ -112,45 +116,6 @@ export default function TopProfessionals() {
 
     fetchTopPros();
   }, [t, currentLocation, page]);
-
-  const mockPros = [
-    {
-      name: "Alex Morgan",
-      role: t.plumber,
-      image: "/professionals/alex.png",
-      rating: 5,
-      reviewsCount: 150,
-      slug: "#",
-      bio: "Professional plumbing service with over 8 years of experience in residential leaks."
-    },
-    {
-      name: "Sarah Watson",
-      role: t.cleaner,
-      image: "/professionals/sarah.png",
-      rating: 5,
-      reviewsCount: 230,
-      slug: "#",
-      bio: "Dedicated home cleaning specialist focusing on deep sanitizing and organizing."
-    },
-    {
-      name: "Michael Chen",
-      role: t.handyman,
-      image: "/professionals/michael.png",
-      rating: 5,
-      reviewsCount: 190,
-      slug: "#",
-      bio: "Versatile repairs expert handling drywall, light carpentry, and general installations."
-    },
-    {
-      name: "David Sherlock",
-      role: t.electrician,
-      image: "/professionals/david.png",
-      rating: 5,
-      reviewsCount: 210,
-      slug: "#",
-      bio: "Fully certified residential electrician skilled in panel upgrades and home wiring."
-    },
-  ];
 
   return (
     <section id="top-professionals-section" className="mx-auto max-w-7xl px-4 sm:px-6 md:py-10 py-4 lg:px-8 bg-zinc-50/50 transition-colors duration-300">
@@ -168,16 +133,31 @@ export default function TopProfessionals() {
         </div>
       </div>
 
-      {!isLocal && currentLocation?.city && (
+      {!isLocal && currentLocation?.city && professionals.length > 0 && (
         <div className="mt-4 p-3 rounded-xl bg-orange-50 border border-orange-100 text-orange-700 text-xs font-semibold text-left">
           {language === "hi" 
-            ? `आपके स्थान (${currentLocation.area ? `${currentLocation.area}, ` : ""}${currentLocation.city}) में कोई पेशेवर नहीं मिला। नीचे लोकप्रिय पेशेवर दिए गए हैं:`
-            : `No professionals found near ${currentLocation.area ? `${currentLocation.area}, ` : ""}${currentLocation.city}. Showing other top professionals instead:`}
+            ? `आपके स्थान (${currentLocation.area ? `${currentLocation.area}, ` : ""}${currentLocation.city}) में कोई वर्कर नहीं मिला। नीचे अन्य लोकप्रिय वर्कर दिए गए हैं:`
+            : `No workers found near ${currentLocation.area ? `${currentLocation.area}, ` : ""}${currentLocation.city}. Showing other top workers instead:`}
         </div>
       )}
 
-      {/* List Layout Stack */}
-      <div className="mt-6 flex flex-col gap-4">
+      {professionals.length === 0 ? (
+        <div className="mt-6 p-8 sm:p-12 rounded-2xl bg-white border border-zinc-200/80 text-center shadow-xs">
+          <div className="h-12 w-12 rounded-full bg-zinc-100 flex items-center justify-center mx-auto mb-3 text-zinc-400">
+            <Star className="h-6 w-6 stroke-[1.5]" />
+          </div>
+          <h3 className="text-base font-bold text-zinc-800 mb-1">
+            {language === "hi" ? "कोई वर्कर नहीं मिला" : "No Approved Workers Found"}
+          </h3>
+          <p className="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto">
+            {language === "hi"
+              ? "आपके चयनित स्थान में अभी कोई स्वीकृत वर्कर उपलब्ध नहीं है।"
+              : "There are currently no approved workers registered in this area."}
+          </p>
+        </div>
+      ) : (
+        /* List Layout Stack */
+        <div className="mt-6 flex flex-col gap-4">
         {professionals.map((pro, index) => (
           <div
             key={index}
@@ -222,7 +202,7 @@ export default function TopProfessionals() {
                 {/* Bio/Description */}
                 {pro.bio && (
                   <p className="mt-1 text-xs text-zinc-550 text-zinc-500 line-clamp-1 leading-relaxed max-w-xl">
-                    {pro.bio}
+                    {getLocalizedBio(pro.bio, language, pro.bio_hi)}
                   </p>
                 )}
 
@@ -258,15 +238,16 @@ export default function TopProfessionals() {
             </div>
           </div>
         ))}
-      </div>
+        </div>
+      )}
 
       {/* Interactive Pagination controls */}
       {totalPages > 1 && (
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-zinc-200/80">
           <p className="text-xs text-zinc-500 font-semibold">
             {language === "hi"
-              ? `कुल ${total} में से ${((page - 1) * 10) + 1}-${Math.min(page * 10, total)} पेशेवर दिखा रहे हैं`
-              : `Showing ${((page - 1) * 10) + 1}-${Math.min(page * 10, total)} of ${total} professionals`}
+              ? `कुल ${total} में से ${((page - 1) * 10) + 1}-${Math.min(page * 10, total)} वर्कर दिखा रहे हैं`
+              : `Showing ${((page - 1) * 10) + 1}-${Math.min(page * 10, total)} of ${total} workers`}
           </p>
 
           <div className="flex items-center gap-1.5">

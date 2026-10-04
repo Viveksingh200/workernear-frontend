@@ -9,6 +9,7 @@ import { useLanguage } from "@/context/languageContext";
 import { useAuth } from "@/context/authContext";
 import { Search, MapPin, Star, Filter, ArrowRight, CheckCircle2 } from "lucide-react";
 import { WorkerCardSkeleton, BackendStatusNotice } from "@/components/Skeletons";
+import { getLocalizedBio } from "@/utils/translateBio";
 
 function SearchResultsContent() {
   const searchParams = useSearchParams();
@@ -215,11 +216,11 @@ function SearchResultsContent() {
             <div>
               <h2 className="text-xl font-black text-zinc-900">
                 {language === "hi"
-                  ? `खोज परिणाम (${total} पेशेवर मिले)`
-                  : `Search Results (${total} professionals found)`}
+                  ? `खोज परिणाम (${total} वर्कर मिले)`
+                  : `Search Results (${total} workers found)`}
               </h2>
               <p className="text-xs text-zinc-400 font-semibold mt-0.5">
-                {language === "hi" ? "प्रति पेज 10 पेशेवर (नीचे पेज बदलें)" : "10 per page. Use pagination below to explore more."}
+                {language === "hi" ? "प्रति पेज 10 वर्कर (नीचे पेज बदलें)" : "10 per page. Use pagination below to explore more."}
               </p>
             </div>
 
@@ -263,7 +264,7 @@ function SearchResultsContent() {
           ) : workers.length === 0 ? (
             <div className="text-center py-16 bg-white border border-gray-150 rounded-2xl p-8">
               <p className="text-zinc-500 font-semibold mb-2">
-                {language === "hi" ? "कोई पेशेवर नहीं मिला।" : "No professionals found matching your query."}
+                {language === "hi" ? "कोई वर्कर नहीं मिला।" : "No workers found matching your query."}
               </p>
               <p className="text-xs text-zinc-400">
                 {language === "hi"
@@ -324,7 +325,7 @@ function SearchResultsContent() {
                         </div>
 
                         <p className="mt-3 text-xs text-zinc-500 line-clamp-2 leading-relaxed">
-                          {worker.description || (language === "hi" ? "कोई विवरण उपलब्ध नहीं है।" : "No description provided.")}
+                          {getLocalizedBio(worker.description, language, worker.description_hi)}
                         </p>
                       </div>
                     </div>
@@ -357,8 +358,8 @@ function SearchResultsContent() {
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-10 pt-6 border-t border-zinc-200/80">
                   <p className="text-xs text-zinc-500 font-semibold">
                     {language === "hi"
-                      ? `कुल ${total} में से ${((page - 1) * 10) + 1}-${Math.min(page * 10, total)} पेशेवर दिखा रहे हैं`
-                      : `Showing ${((page - 1) * 10) + 1}-${Math.min(page * 10, total)} of ${total} professionals`}
+                      ? `कुल ${total} में से ${((page - 1) * 10) + 1}-${Math.min(page * 10, total)} वर्कर दिखा रहे हैं`
+                      : `Showing ${((page - 1) * 10) + 1}-${Math.min(page * 10, total)} of ${total} workers`}
                   </p>
 
                   <div className="flex items-center gap-1.5">

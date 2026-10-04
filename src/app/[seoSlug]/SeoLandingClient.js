@@ -6,6 +6,7 @@ import { useLanguage } from "@/context/languageContext";
 import { useAuth } from "@/context/authContext";
 import { Search, MapPin, Star, Filter, ArrowRight, CheckCircle2 } from "lucide-react";
 import { WorkerCardSkeleton, BackendStatusNotice } from "@/components/Skeletons";
+import { getLocalizedBio } from "@/utils/translateBio";
 
 export default function SeoLandingClient({
   initialWorkers,
@@ -118,8 +119,8 @@ export default function SeoLandingClient({
         </h1>
         <p className="text-sm md:text-base text-zinc-500 max-w-2xl font-light">
           {language === "hi"
-            ? `${locationString} में सत्यापित और अत्यधिक रेटेड ${serviceName} विशेषज्ञों को खोजें। उनकी उपलब्धता और रेटिंग देखें।`
-            : `Find verified, highly rated ${serviceName} professionals in ${locationString}. Compare profiles, read real customer reviews, and hire instantly.`}
+            ? `${locationString} में सत्यापित और अत्यधिक रेटेड ${serviceName} वर्कर खोजें। उनकी उपलब्धता और रेटिंग देखें।`
+            : `Find verified, highly rated ${serviceName} workers in ${locationString}. Compare profiles, read real customer reviews, and hire instantly.`}
         </p>
       </div>
 
@@ -196,8 +197,8 @@ export default function SeoLandingClient({
         <div className="flex justify-between items-center pb-2">
           <h2 className="text-xl font-bold text-zinc-900">
             {language === "hi"
-              ? `परिणाम (${total} पेशेवर मिले)`
-              : `Results (${total} professionals found)`}
+              ? `परिणाम (${total} वर्कर मिले)`
+              : `Results (${total} workers found)`}
           </h2>
         </div>
 
@@ -279,8 +280,7 @@ export default function SeoLandingClient({
                       </div>
 
                       <p className="mt-3 text-xs text-zinc-500 line-clamp-2 leading-relaxed">
-                        {worker.description ||
-                          (language === "hi" ? "कोई विवरण उपलब्ध नहीं है।" : "No description provided.")}
+                        {getLocalizedBio(worker.description, language, worker.description_hi)}
                       </p>
                     </div>
                   </div>

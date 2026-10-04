@@ -27,7 +27,7 @@ export async function generateMetadata({ params }) {
   if (!worker) {
     return {
       title: "Worker Profile | WorkerNear",
-      description: "Find trusted local professionals near you."
+      description: "Find trusted local workers near you."
     };
   }
 
@@ -87,7 +87,7 @@ export default async function WorkerProfilePage({ params }) {
     "@type": "LocalBusiness",
     "name": worker.name,
     "image": getProfileImageUrl(worker.profileImage) || "http://localhost:3000/register.png",
-    "description": worker.description || `Professional ${worker.profession} in ${worker.city}`,
+    "description": worker.description || `${worker.profession} in ${worker.city}`,
     "address": {
       "@type": "PostalAddress",
       "addressLocality": worker.area,

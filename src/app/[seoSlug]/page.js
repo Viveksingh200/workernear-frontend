@@ -162,7 +162,7 @@ export default async function SeoLandingPage({ params }) {
       "item": {
         "@type": "LocalBusiness",
         "name": worker.name,
-        "description": worker.description || `Professional ${worker.profession} in ${worker.city}`,
+        "description": worker.description || `${worker.profession} in ${worker.city}`,
         "image": worker.profileImage ? `http://localhost:3000${worker.profileImage}` : undefined,
         "address": {
           "@type": "PostalAddress",

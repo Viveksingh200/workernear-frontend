@@ -24,6 +24,8 @@ export default function UserProfile() {
 
   // Profile Form States
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [area, setArea] = useState("");
   const [updatingProfile, setUpdatingProfile] = useState(false);
@@ -45,6 +47,8 @@ export default function UserProfile() {
   useEffect(() => {
     if (user) {
       setName(user.name || "");
+      setEmail(user.email || "");
+      setPhone(user.phone || "");
       setCity(user.city || "");
       setArea(user.area || "");
     }
@@ -69,7 +73,7 @@ export default function UserProfile() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ name, city, area })
+        body: JSON.stringify({ name, email, phone, city, area })
       });
 
       const data = await res.json();
@@ -187,15 +191,30 @@ export default function UserProfile() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-zinc-500">{t.phoneNumber}</label>
+                <label className="text-xs font-bold text-zinc-500">{t.email || "Email Address"}</label>
                 <input
-                  type="text"
-                  value={user.phone || ""}
-                  disabled
-                  className="px-4 py-2.5 bg-zinc-50 text-zinc-400 rounded-xl text-sm cursor-not-allowed"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t.emailPlaceholder || "name@example.com"}
+                  className="px-4 py-2.5 bg-zinc-100 hover:bg-zinc-150/50 focus:bg-white rounded-xl text-sm transition-all duration-200 outline-none focus:ring-2 focus:ring-amber-500/20"
                 />
                 <span className="text-[10px] text-zinc-400">
-                  {language === "hi" ? "फोन नंबर बदला नहीं जा सकता।" : "Phone number cannot be changed."}
+                  {language === "hi" ? "आप इस ईमेल से भी लॉगिन कर सकते हैं।" : "You can also use this email to log in."}
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-bold text-zinc-500">{t.phoneNumber}</label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder={t.phonePlaceholder || "Enter phone number"}
+                  className="px-4 py-2.5 bg-zinc-100 hover:bg-zinc-150/50 focus:bg-white rounded-xl text-sm transition-all duration-200 outline-none focus:ring-2 focus:ring-amber-500/20"
+                />
+                <span className="text-[10px] text-zinc-400">
+                  {language === "hi" ? "फोन नंबर आपके खाते से जुड़ा रहेगा।" : "Phone number linked to your account."}
                 </span>
               </div>
 

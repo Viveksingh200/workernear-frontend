@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 export const metadata = {
   title: "Carpenters, Painters, AC repair Technicians, Plumbers | Find Trusted Local Workers",
   description:
-    "Search trusted electricians, plumbers, carpenters, painters, AC repair technicians and home service professionals near your location.",
+    "Search trusted electricians, plumbers, carpenters, painters, AC repair technicians and home service workers near your location.",
   alternates: {
     canonical: "https://workernear.com",
   },

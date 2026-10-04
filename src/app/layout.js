@@ -23,7 +23,7 @@ export const metadata = {
     template: "%s | Workers near me",
   },
   description:
-    "Find trusted local workers near you including electricians, plumbers, carpenters, painters, AC repair technicians, home cleaning professionals, and more across India.",
+    "Find trusted local workers near you including electricians, plumbers, carpenters, painters, AC repair technicians, home cleaning workers, and more across India.",
   keywords: [
     "worker near me",
     "local workers",

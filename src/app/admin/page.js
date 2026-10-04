@@ -372,7 +372,7 @@ export default function AdminDashboard() {
             {activeTab === "approvals" && (
               <div className="bg-white rounded-2xl border border-gray-150 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-gray-100">
-                  <h2 className="font-extrabold text-lg text-zinc-950">Pending Professional Profiles</h2>
+                  <h2 className="font-extrabold text-lg text-zinc-950">Pending Worker Profiles</h2>
                   <p className="text-xs text-zinc-400 mt-0.5">Approve new worker profiles before they go live in search discovery.</p>
                 </div>
 

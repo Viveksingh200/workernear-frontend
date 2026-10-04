@@ -369,19 +369,41 @@ export function AuthProvider({ children }) {
     }
   }, [loading, user]);
 
-  const login = async (phone, password) => {
+  const login = async (identifier, password) => {
     try {
       const res = await fetch(`${BACKEND_URL}/user/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ phone, password })
+        body: JSON.stringify({ identifier, password })
       });
 
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.message || "Failed to log in");
+      }
+
+      setAuthSession(data.data.token, data.data.refreshToken, data.data.user, data.data.workerProfile);
+      return { success: true, user: data.data.user };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  };
+
+  const loginWithGoogle = async (credential, role = "user", accessToken = null) => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/user/google-login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ credential, role, accessToken })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to authenticate with Google");
       }
 
       setAuthSession(data.data.token, data.data.refreshToken, data.data.user, data.data.workerProfile);
@@ -412,14 +434,14 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const requestPasswordReset = async (phone) => {
+  const requestPasswordReset = async (identifier) => {
     try {
       const res = await fetch(`${BACKEND_URL}/user/forgot-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ phone })
+        body: JSON.stringify({ identifier })
       });
       const data = await res.json();
       if (!res.ok) {
@@ -431,14 +453,14 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const resetPasswordWithOtp = async (phone, otp, newPassword) => {
+  const resetPasswordWithOtp = async (identifier, otp, newPassword) => {
     try {
       const res = await fetch(`${BACKEND_URL}/user/reset-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ phone, otp, newPassword })
+        body: JSON.stringify({ identifier, otp, newPassword })
       });
       const data = await res.json();
       if (!res.ok) {
@@ -472,6 +494,7 @@ export function AuthProvider({ children }) {
         workerProfile,
         loading,
         login,
+        loginWithGoogle,
         register,
         requestPasswordReset,
         resetPasswordWithOtp,

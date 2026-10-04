@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/authContext";
 import { useLanguage } from "@/context/languageContext";
 import { Eye, EyeOff } from "lucide-react";
+import GoogleAuthButton from "@/components/GoogleAuthButton";
 
 function RegisterContent() {
   const { register } = useAuth();
@@ -15,6 +16,7 @@ function RegisterContent() {
   const redirect = searchParams.get("redirect");
 
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -38,8 +40,8 @@ function RegisterContent() {
     setSuccess("");
     setLoading(true);
 
-    if (!name || !phone || !password) {
-      setError("All fields are required!");
+    if (!name || (!email && !phone) || !password) {
+      setError("Please fill in your name, email address, and password.");
       setTimeout(() => setError(""), 5000);
       setLoading(false);
       return;
@@ -55,7 +57,8 @@ function RegisterContent() {
 
     const payload = {
       name,
-      phone,
+      email: email.trim(),
+      phone: phone.trim(),
       password,
       role,
       city: finalCity,
@@ -85,7 +88,7 @@ function RegisterContent() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4 bg-zinc-100">
       <div className="bg-white px-6 py-6 sm:py-8 rounded-2xl shadow-md w-full max-w-md border border-zinc-200/50">
-        
+
         {/* heading */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
           <div className="flex flex-col justify-center gap-1 items-center">
@@ -123,17 +126,34 @@ function RegisterContent() {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label htmlFor="phone" className="text-zinc-700 font-bold text-xs">
-                {t.phoneNumber}
+              <label htmlFor="email" className="text-zinc-700 font-bold text-xs">
+                {t.email || "Email Address"}
               </label>
               <input
-                id="phone"
-                type="text"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder={t.phonePlaceholder}
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t.emailPlaceholder || "name@example.com"}
                 className="px-3 py-1.5 border border-zinc-200 rounded-lg outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-xs text-zinc-800"
                 required
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center justify-between">
+                <label htmlFor="phone" className="text-zinc-700 font-bold text-xs">
+                  {t.phoneNumber}
+                </label>
+                <span className="text-[10px] text-zinc-400 font-normal">{t.optional || "Optional"}</span>
+              </div>
+              <input
+                id="phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder={t.phonePlaceholder || "Enter your phone number"}
+                className="px-3 py-1.5 border border-zinc-200 rounded-lg outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-xs text-zinc-800"
               />
             </div>
 
@@ -236,30 +256,28 @@ function RegisterContent() {
                 <button
                   type="button"
                   onClick={() => setRole("user")}
-                  className={`text-center py-1.5 px-2 text-[11px] font-extrabold rounded-md transition-all duration-200 cursor-pointer ${
-                    role === "user"
-                      ? "bg-white text-zinc-900 shadow-sm border border-zinc-200"
-                      : "text-zinc-500 hover:text-zinc-800"
-                  }`}
+                  className={`text-center py-1.5 px-2 text-[11px] font-extrabold rounded-md transition-all duration-200 cursor-pointer ${role === "user"
+                    ? "bg-white text-zinc-900 shadow-sm border border-zinc-200"
+                    : "text-zinc-500 hover:text-zinc-800"
+                    }`}
                 >
                   {language === "hi" ? "उपयोगकर्ता" : "Customer"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setRole("provider")}
-                  className={`text-center py-1.5 px-2 text-[11px] font-extrabold rounded-md transition-all duration-200 cursor-pointer ${
-                    role === "provider"
-                      ? "bg-white text-zinc-900 shadow-sm border border-zinc-200"
-                      : "text-zinc-500 hover:text-zinc-800"
-                  }`}
+                  className={`text-center py-1.5 px-2 text-[11px] font-extrabold rounded-md transition-all duration-200 cursor-pointer ${role === "provider"
+                    ? "bg-white text-zinc-900 shadow-sm border border-zinc-200"
+                    : "text-zinc-500 hover:text-zinc-800"
+                    }`}
                 >
-                  {language === "hi" ? "पेशेवर" : "Professional"}
+                  {language === "hi" ? "वर्कर" : "Worker"}
                 </button>
               </div>
               <p className="text-[9px] text-zinc-400 font-medium text-center">
                 {role === "user"
-                  ? (language === "hi" ? "आप अपने काम के लिए सेवा प्रदाता की तलाश में हैं।" : "For finding and booking local service providers.")
-                  : (language === "hi" ? "आप अपनी सेवाएं सूचीबद्ध करना चाहते हैं।" : "For listing professional services and getting requests.")}
+                  ? (language === "hi" ? "आप अपने काम के लिए वर्कर की तलाश में हैं।" : "For finding and booking local workers.")
+                  : (language === "hi" ? "आप अपनी सेवाएं सूचीबद्ध करना चाहते हैं।" : "For listing worker services and getting requests.")}
               </p>
             </div>
           </div>
@@ -271,6 +289,25 @@ function RegisterContent() {
           >
             {loading ? "Registering..." : t.register}
           </button>
+
+          {/* OR Divider */}
+          <div className="relative flex items-center justify-center my-0.5">
+            <div className="border-t border-zinc-200 w-full" />
+            <span className="bg-white px-3 text-[11px] font-bold text-zinc-400 uppercase tracking-widest">
+              OR
+            </span>
+            <div className="border-t border-zinc-200 w-full" />
+          </div>
+
+          <GoogleAuthButton
+            role={role}
+            redirectUrl={redirect}
+            text="Continue with Google"
+            onError={(msg) => {
+              setError(msg);
+              setTimeout(() => setError(""), 6000);
+            }}
+          />
 
           <p className="text-xs text-zinc-500 self-center font-medium">
             {t.alreadyHaveAccount}

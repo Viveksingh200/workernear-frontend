@@ -68,8 +68,8 @@ export default function WorkerDashboard() {
   }
 
   const profile = workerProfile || {
-    name: user.name || "Provider",
-    profession: "Pending Setup",
+    name: user.name || "Worker",
+    profession: "",
     availability: "Available",
     profileCompletion: 0,
     approved: false,
@@ -118,7 +118,7 @@ export default function WorkerDashboard() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
               <span className="bg-amber-500/10 text-amber-400 text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full">
-                {language === "hi" ? "व्यावसायिक पैनल" : "Professional Panel"}
+                {language === "hi" ? "वर्कर पैनल" : "Worker Panel"}
               </span>
 
               <h1 className="text-3xl font-black tracking-tight mt-2.5">
@@ -279,7 +279,7 @@ export default function WorkerDashboard() {
             <div className="bg-white rounded-3xl p-6 shadow-sm shadow-zinc-200/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:shadow-md hover:scale-[1.005] transition-all duration-200">
               <div>
                 <h3 className="font-bold text-sm text-zinc-900">
-                  {language === "hi" ? "अपनी व्यावसायिक जानकारी अपडेट करें" : "Update Professional Listings"}
+                  {language === "hi" ? "अपनी वर्कर जानकारी अपडेट करें" : "Update Worker Listings"}
                 </h3>
                 <p className="text-xs text-zinc-400 mt-0.5">
                   {language === "hi" ? "स्थान, श्रेणियाँ और सेवा विवरण प्रबंधित करें।" : "Manage work areas, services categories, description & security password."}

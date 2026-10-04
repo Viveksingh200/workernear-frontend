@@ -100,6 +100,7 @@ export default function PopularServices() {
             "appliance-repair": "hover:text-indigo-600 hover:border-indigo-300",
             "house-cleaning": "hover:text-purple-600 hover:border-purple-300",
             "gardening": "hover:text-green-600 hover:border-green-300",
+            "astrologers": "hover:text-amber-600 hover:border-amber-300",
           };
           const hoverClass = hoverTextColors[slug] || "hover:text-orange-600 hover:border-orange-300";
 
