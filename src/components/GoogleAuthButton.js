@@ -3,8 +3,7 @@
 import React, { useState } from "react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "@/context/authContext";
-
-const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
+import { GOOGLE_CLIENT_ID } from "@/config";
 
 function GoogleSignInButton({ role = "user", redirectUrl = "", text = "Continue with Google", onError }) {
   const { loginWithGoogle } = useAuth();
