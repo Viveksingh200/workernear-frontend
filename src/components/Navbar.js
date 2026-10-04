@@ -84,62 +84,96 @@ export default function Navbar() {
                     </button>
 
                     <div className="space-y-3">
-                      {/* City Select */}
+                      {/* Popular City Quick Chips */}
                       <div className="flex flex-col gap-1">
-                        <label className="text-[10px] font-bold text-zinc-400 uppercase text-left">{t.city}</label>
-                        <select
-                          value={editCity}
-                          onChange={(e) => {
-                            setEditCity(e.target.value);
-                            setEditArea("");
-                          }}
-                          className="w-full px-3 py-1.5 border border-zinc-200 rounded-lg text-xs bg-white text-zinc-700 focus:outline-none"
-                        >
-                          <option value="">{t.cityPlaceholder}</option>
-                          <option value="Mumbai">Mumbai</option>
-                          <option value="Navi Mumbai">Navi Mumbai</option>
-                          <option value="Pune">Pune</option>
-                          <option value="Delhi">Delhi</option>
-                          <option value="Bangalore">Bangalore</option>
-                        </select>
+                        <label className="text-[10px] font-bold text-zinc-400 uppercase text-left">
+                          {language === "hi" ? "लोकप्रिय शहर:" : "Popular Cities:"}
+                        </label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {["Mumbai", "Thane", "Navi Mumbai", "Pune", "Delhi"].map((c) => (
+                            <button
+                              key={c}
+                              type="button"
+                              onClick={() => {
+                                setEditCity(c);
+                                setEditArea("");
+                              }}
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition-all cursor-pointer ${
+                                editCity === c
+                                  ? "bg-amber-500 text-white shadow-xs"
+                                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                              }`}
+                            >
+                              {c}
+                            </button>
+                          ))}
+                        </div>
                       </div>
 
-                      {/* Area Select/Input */}
+                      {/* City Input with Datalist */}
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] font-bold text-zinc-400 uppercase text-left">{t.city}</label>
+                        <input
+                          type="text"
+                          list="popular-cities-list"
+                          value={editCity}
+                          onChange={(e) => setEditCity(e.target.value)}
+                          placeholder={language === "hi" ? "शहर का नाम दर्ज करें (उदा. Thane)" : "Enter city (e.g. Thane, Mumbai)"}
+                          className="w-full px-3 py-2 border border-zinc-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 rounded-lg text-xs bg-white text-zinc-900 outline-none transition-all"
+                        />
+                        <datalist id="popular-cities-list">
+                          <option value="Mumbai" />
+                          <option value="Thane" />
+                          <option value="Navi Mumbai" />
+                          <option value="Palghar" />
+                          <option value="Bhiwandi" />
+                          <option value="Kalyan" />
+                          <option value="Dombivli" />
+                          <option value="Pune" />
+                          <option value="Delhi" />
+                          <option value="Bangalore" />
+                          <option value="Hyderabad" />
+                          <option value="Ahmedabad" />
+                        </datalist>
+                      </div>
+
+                      {/* Area/Locality Input with Datalist */}
                       <div className="flex flex-col gap-1">
                         <label className="text-[10px] font-bold text-zinc-400 uppercase text-left">{t.area}</label>
-                        {editCity === "Mumbai" || editCity === "Navi Mumbai" ? (
-                          <select
-                            value={editArea}
-                            onChange={(e) => setEditArea(e.target.value)}
-                            className="w-full px-3 py-1.5 border border-zinc-200 rounded-lg text-xs bg-white text-zinc-700 focus:outline-none"
-                          >
-                            <option value="">{t.areaPlaceholder}</option>
-                            <option value="Belapur">Belapur</option>
-                            <option value="Seawoods">Seawoods</option>
-                            <option value="Nerul">Nerul</option>
-                            <option value="Kharghar">Kharghar</option>
-                            <option value="Vashi">Vashi</option>
-                          </select>
-                        ) : (
-                          <input
-                            type="text"
-                            value={editArea}
-                            onChange={(e) => setEditArea(e.target.value)}
-                            placeholder={t.areaPlaceholder}
-                            className="w-full px-3 py-1.5 border border-zinc-200 rounded-lg text-xs text-zinc-700 focus:outline-none"
-                          />
-                        )}
+                        <input
+                          type="text"
+                          list="popular-areas-list"
+                          value={editArea}
+                          onChange={(e) => setEditArea(e.target.value)}
+                          placeholder={language === "hi" ? "क्षेत्र/लोकेशन दर्ज करें (उदा. Kolshet)" : "Enter area/locality (e.g. Kolshet, Airoli)"}
+                          className="w-full px-3 py-2 border border-zinc-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 rounded-lg text-xs bg-white text-zinc-900 outline-none transition-all"
+                        />
+                        <datalist id="popular-areas-list">
+                          <option value="Belapur" />
+                          <option value="Seawoods" />
+                          <option value="Nerul" />
+                          <option value="Kharghar" />
+                          <option value="Vashi" />
+                          <option value="Airoli" />
+                          <option value="Kolshet" />
+                          <option value="Wagle Estate" />
+                          <option value="Mulund" />
+                          <option value="Dahisar" />
+                          <option value="Andheri" />
+                          <option value="Bandra" />
+                          <option value="Dadar" />
+                        </datalist>
                       </div>
 
                       {/* Apply Button */}
                       <button
                         onClick={() => {
-                          updateLocation({ city: editCity, area: editArea });
+                          updateLocation({ city: editCity.trim(), area: editArea.trim() });
                           setLocationDropdownOpen(false);
                         }}
-                        className="w-full flex items-center justify-center rounded-xl bg-zinc-900 hover:bg-black text-white py-2 text-xs font-bold transition-all cursor-pointer mt-1"
+                        className="w-full flex items-center justify-center rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white py-2 text-xs font-bold transition-all shadow-md shadow-orange-500/20 cursor-pointer mt-2"
                       >
-                        <span>Apply</span>
+                        <span>{language === "hi" ? "लागू करें" : "Apply Location"}</span>
                       </button>
                     </div>
                   </div>
